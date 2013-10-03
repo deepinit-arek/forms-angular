@@ -1,0 +1,33 @@
+var mongoose = require('mongoose')
+    , Schema = mongoose.Schema;
+
+var HierarchyElement = new Schema({
+    elementNo: {type: Number, required: true, form:{label : 'Element No', hidden: true}},
+    parent: { type: Number, form: {hidden: true} },
+    name: {type : String, required:true},  // merge field in doc.  unique within careplan structure
+    label: {type : String},  // merge field in doc. unique within careplan structure
+    order: {type: Number, form: {hidden: true}},
+    dataType: {type: String, enum:['text', 'textarea', 'container', 'array']}
+}, {_id: false});
+
+var HierarchyStructureSchema = new Schema({
+    // elements : {type:[CareplanElement]}
+    Hierarchy: {type: [HierarchyElement], form: {hierarchy: true}}
+});
+         
+var HierarchyStructure;
+
+var modelName = 'HierarchyStructure';
+try {
+    HierarchyStructure = mongoose.model(modelName)
+} catch (e) {
+    HierarchyStructure = mongoose.model('HierarchyStructure', HierarchyStructureSchema)
+}
+
+module.exports = {
+    model: HierarchyStructure,
+    schema: HierarchyStructureSchema, 
+    elements: HierarchyElement
+}
+
+
