@@ -34,7 +34,8 @@ formsAngular
                 	'<span ng-if="field.type == \'container\'">' +
                 	'<i class="icon-plus-sign" ng-click="addChild($event, field.elementNo)"></i>' +
                 	'</span>' +
-                	'<i class="icon-minus-sign" ng-click="removeLine(\'{{model}}\', $index)"></i>' +
+                    //call to removeLine
+                	'<i class="icon-minus-sign" ng-click="removeLine(\'{{model}}\', {{field.elementNo}})"></i>' +
                 	'<span ng-if="field.type != \'container\'">' +
                 	'<i class="icon"></i>' +
                 	'</span>' +
@@ -124,7 +125,26 @@ formsAngular
 
                     // }, true);
 
-                    scope.removeLine = function(parentName, index) {
+                    scope.removeLine = function(model, elementNo) {
+
+                        var record = scope.record
+                        , index = -1;
+
+                        //find index
+
+                        for (var i = 0; i < record[model].length; i++) {
+                            if (record[model][i]['elementNo'] === elementNo) {
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        if (index !== -1) {
+                            scope.remove(model, index);
+                        };
+
+
+                        //get the index of the the element
 
                         // scope.$apply(function () {
 
