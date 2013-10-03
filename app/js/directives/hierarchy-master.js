@@ -64,6 +64,7 @@ formsAngular
 
 						scope.hier = utils.createFormSchema(scope.path);
 
+						console.log(scope.path);
 						console.log(scope.hier);
 
 					}

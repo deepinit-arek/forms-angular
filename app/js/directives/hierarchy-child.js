@@ -1,6 +1,6 @@
 formsAngular
 
-.directive('faHierarchyChild', function($compile) {
+.directive('faHierarchyChild', function($compile, ngDragDropService) {
 
     return {
 
@@ -22,7 +22,7 @@ formsAngular
 
 
                 	var template = 
-                	'<div class="hierarchy-list {{field.dataType}}">' +
+                	'<div class="hierarchy-list {{field.dataType}}" jqyoui-droppable="{animate:true}" jqyoui-draggable="{animate:true}" data-drop="true" data-drag="true" data-jqyoui-options="{revert: true}">' +
                 	'<div ng-switch on="toggleCPElement">' +
                 	'<div ng-switch-when="true">' +
                 	'<span class="name"><i class="{{iconType}}"></i>{{field.name}}</span>' +
@@ -40,7 +40,7 @@ formsAngular
                 	'<i class="icon"></i>' +
                 	'</span>' +
                 	'<i class="icon-edit" ng-click="editElement()"></i>' +
-                	'<i class="icon-move"></i>' +
+                	'<i class="icon-move" data-drag="true"></i>' +
                 	'</span>' +
                 	'<div ng-switch on="toggleChildElement">' +
                 	'<div ng-switch-when="true">' +
@@ -94,6 +94,19 @@ formsAngular
                     // var newElement = angular.element(template);
                     // $compile(newElement)(scope);
                     // element.replaceWith(newElement);
+
+                    function getIndex(model, elementNo) {
+
+                        var record = scope.record
+                        , index = -1;
+
+                        for (var i = 0; i < record[model].length; i++) {
+                            if (record[model][i]['elementNo'] === elementNo) {
+                                return i;
+                            }
+                        }
+
+                    }
 
 
 
