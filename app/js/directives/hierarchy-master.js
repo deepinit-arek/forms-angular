@@ -16,7 +16,8 @@ formsAngular
 		compile: function(tElement, tAttrs, transclude) {
 
 			return {
-				pre: function(scope, element, attrs) {
+
+				post: function(scope, element, attrs) {
 
 					//quick and dirty.
 					var path = attrs.record.split('.');
@@ -32,10 +33,6 @@ formsAngular
 					}
 
 					scope.path = path;
-
-				},
-
-				post: function(scope, element, attrs) {
 
 					scope.parsePath = function parsePath() {
 
