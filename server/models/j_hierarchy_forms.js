@@ -12,6 +12,7 @@ var HierarchyElement = new Schema({
 
 var HierarchyStructureSchema = new Schema({
     // elements : {type:[CareplanElement]}
+    Name: {type: String,required: true, index:true,list:{}},
     Hierarchy: {type: [HierarchyElement], form: {hierarchy: true}}
 });
          

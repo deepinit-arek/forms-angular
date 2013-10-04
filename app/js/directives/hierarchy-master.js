@@ -13,24 +13,13 @@ formsAngular
 
 		replace: true,
 
-
 		compile: function(tElement, tAttrs, transclude) {
 
 			return {
 				pre: function(scope, element, attrs) {
 
-					// scope.$watch('record', function() {
-					// 	// console.log(scope.path);
-					// }, true);
-
 					//quick and dirty.
 					var path = attrs.record.split('.');
-
-					// if (path.length === 1) {
-
-					//     path = scope[path[0]];
-
-					// }
 
 					if (path.length === 2) {
 
@@ -39,25 +28,13 @@ formsAngular
 						if (scope[path[0]][path[1]] === undefined) {
 							scope[path[0]][path[1]] = [];
 						}
-
 						path = scope[path[0]][path[1]] || [];
-
-
 					}
-
-
-
-					// if (path.length === 3) {
-					//     path = scope[path[0]][path[1]][path[2]];
-					// }
-
-					// console.log(path);
 
 					scope.path = path;
 
-
-
 				},
+
 				post: function(scope, element, attrs) {
 
 					scope.parsePath = function parsePath() {
@@ -71,14 +48,12 @@ formsAngular
 
 					scope.parsePath();
 
-					scope.watchPath = function () {
+					scope.watchPath = function() {
 
 						scope.unwatchPath = scope.$watch('path', function(neww, oldd) {
 
-							
 							//we only care if its a new model and not amendments to the model?
 							if (neww.length !== oldd.length) {
-								// scope.unwatchPath();
 
 								scope.parsePath();
 
@@ -91,54 +66,6 @@ formsAngular
 					scope.watchPath();
 
 					scope.schemaName = attrs.schema;
-
-					// scope.path = scope.parentName + '.' + scope.field.elementNo;
-
-					// scope.toggleShow = function() {
-
-					//     if (scope.field.name === undefined) {
-					//         scope.remove(scope.parentName, scope.$index);
-					//     }
-
-					//     scope.field.elementNo = scope.$index;
-
-					//     scope.toggleCPElement = !scope.toggleCPElement;
-
-					// }
-
-					// scope.$watch('field.dataType', function(newVal, oldVal) {
-					//     if (newVal === 'container') {
-					//         scope.iconType = 'icon-folder-close';
-					//     } else {
-					//         scope.iconType = 'icon-list';
-					//     }
-
-					// }, true);
-
-					// scope.removeLine = function(parentName, index) {
-
-					//     // scope.$apply(function () {
-
-					//     scope.remove(parentName, index);
-					//     // scope.toggleShow();
-
-					//     // })
-
-					//     // scope.updateView();
-					// }
-
-
-					// scope.$watch('$last', function(v, b, c, d, e, f, g, h) {});
-
-					// scope.updateView = function() {
-
-					//     if (scope.$last) {
-
-					//     }
-
-
-
-					// }
 
 					scope.add = function() {
 
@@ -162,46 +89,12 @@ formsAngular
 
 					scope.addChild = function() {
 
-
-
 						var arrayField = scope.add();
 
 						arrayField.push({
 							elementNo: arrayField.length
 						});
-
-						// scope.unwatchPath();
-
 					}
-
-					// if (arrayField instanceof Array) {
-
-
-					// }
-
-					// if (arrayField instanceof Object) {
-
-					//     arrayField.children = [];
-
-					//     arrayField.children.push({parent: scope.field.elementNo});
-
-					// }
-
-
-					// scope.save();
-
-					// console.log(scope.record);
-
-
-
-					// var test = scope.add(scope.parentName);
-
-					// scope.toggleChildElement = !scope.toggleChildElement;
-
-
-
-					function getParentName() {}
-
 				}
 			}
 		}
