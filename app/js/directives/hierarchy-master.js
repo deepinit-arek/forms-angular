@@ -26,20 +26,26 @@ formsAngular
 
 						scope.model = path[1];
 
-						if (scope[path[0]][path[1]] === undefined) {
-							scope[path[0]][path[1]] = [];
-						}
-						path = scope[path[0]][path[1]] || [];
-					}
+						if (scope[path[0]] === undefined) {
 
-					scope.path = path;
+							scope[path[0]] = {};
+							scope.path = scope[path[0]][path[1]] = [];
+						} else {
+							if (scope[path[0]][path[1]] === undefined) {
+								scope.path = scope[path[0]][path[1]] = [];
+							} else {
+								scope.path = scope[path[0]][path[1]]; 
+							}
+						}
+					}
 
 					scope.parsePath = function parsePath() {
 
 						scope.hier = utils.createFormSchema(scope.path);
 
-						console.log(scope.path);
-						console.log(scope.hier);
+						// console.log(scope.hier);
+
+
 
 					}
 
@@ -49,7 +55,6 @@ formsAngular
 
 						scope.unwatchPath = scope.$watch('path', function(neww, oldd) {
 
-							//we only care if its a new model and not amendments to the model?
 							if (neww.length !== oldd.length) {
 
 								scope.parsePath();
