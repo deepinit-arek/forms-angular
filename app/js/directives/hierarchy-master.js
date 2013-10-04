@@ -1,7 +1,7 @@
 //acts as the master element to control all sub elements.
 formsAngular
 
-.directive('faHierarchyList', function($compile, utils) {
+.directive('fngHierarchyList', function($compile, utils) {
 
 	return {
 

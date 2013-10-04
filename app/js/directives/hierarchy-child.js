@@ -1,6 +1,6 @@
 formsAngular
 
-.directive('faHierarchyChild', function($compile, ngDragDropService) {
+.directive('fngHierarchyChild', function($compile, ngDragDropService) {
 
     return {
 
@@ -36,8 +36,8 @@ formsAngular
                         '</span>' +
                         '<div ng-switch on="toggleChildElement">' +
                         '<div ng-switch-when="true">' +
-                        '<!-- <fa-hierarchy-list data-record="test" data-child="true"></fa-hierarchy-list> -->' +
-                        '<!-- <fa-hierarchy-child ng-repeat=\'field in field.content\' track by elementNo></fa-hierarchy-child> -->' +
+                        '<!-- <fng-hierarchy-list data-record="test" data-child="true"></fng-hierarchy-list> -->' +
+                        '<!-- <fng-hierarchy-child ng-repeat=\'field in field.content\' track by elementNo></fng-hierarchy-child> -->' +
                         '<button btn ng-click="saveElement()">done</button>' +
                         '</div>' +
                         '</div>' +
@@ -49,7 +49,7 @@ formsAngular
                         '</div>' +
                         '<div class="children" ng-if="field.content">' +
                         '<span ng-if="field.content != undefined">' +
-                        '<fa-hierarchy-child ng-repeat=\'field in field.content\' track by elementNo></fa-hierarchy-child>' +
+                        '<fng-hierarchy-child ng-repeat=\'field in field.content\' track by elementNo></fng-hierarchy-child>' +
                         '</span>' +
                         '</div>' +
                         '</div>';
