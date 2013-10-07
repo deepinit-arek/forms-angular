@@ -19,37 +19,12 @@ formsAngular
 
 				post: function(scope, element, attrs) {
 
-					//quick and dirty.
-					var path = attrs.record.split('.');
-
-					if (path.length === 2) {
-
-						scope.model = path[1];
-
-						if (scope[path[0]] === undefined) {
-
-							scope[path[0]] = {};
-							scope.path = scope[path[0]][path[1]] = [];
-						} else {
-							if (scope[path[0]][path[1]] === undefined) {
-								scope.path = scope[path[0]][path[1]] = [];
-							} else {
-								scope.path = scope[path[0]][path[1]]; 
-							}
-						}
-					}
+					//FUNCTION DEFINITIONS
 
 					scope.parsePath = function parsePath() {
 
 						scope.hier = utils.createFormSchema(scope.path);
-
-						// console.log(scope.hier);
-
-
-
 					}
-
-					scope.parsePath();
 
 					scope.watchPath = function() {
 
@@ -65,18 +40,11 @@ formsAngular
 
 					}
 
-					scope.watchPath();
-
-					scope.schemaName = attrs.schema;
-
-
-
 					scope.add = function() {
 
 						var arrayField;
 						var fieldParts = scope.model.split('.');
 						arrayField = scope.record;
-						// var elementNo = arrayField[fieldParts;]
 						for (var i = 0, l = fieldParts.length; i < l; i++) {
 							if (!arrayField[fieldParts[i]]) {
 								if (i === l - 1) {
@@ -90,6 +58,19 @@ formsAngular
 
 					}
 
+					scope.getNextElementNo = function(arrayField) {
+
+						var elementArray = [];
+
+						for (var i = arrayField.length - 1; i >= 0; i--) {
+							elementArray.push(arrayField[i].elementNo);
+						};
+
+						elementArray.sort();
+
+						return elementArray[elementArray.length - 1] + 1;
+
+					}
 
 					scope.addChild = function() {
 
@@ -100,20 +81,37 @@ formsAngular
 						});
 					}
 
-					 scope.getNextElementNo = function(arrayField) {
+					//MAIN
 
-						var elementArray = [];
+					//quick and dirty. Assumes its always second level from record.
+					//e.g. record.Hierarchy TODO make generic.
+					var path = attrs.record.split('.');
 
-						for (var i = arrayField.length - 1; i >= 0; i--) {
-							elementArray.push (arrayField[i].elementNo);
-						};
+					// if (path.length === 2) {
 
-						elementArray.sort();
+						scope.model = path[1];
 
-						return elementArray[elementArray.length-1] + 1;
-						
+						if (scope[path[0]] === undefined) {
 
-					}
+							scope[path[0]] = {};
+							scope.path = scope[path[0]][path[1]] = [];
+						} else {
+							if (scope[path[0]][path[1]] === undefined) {
+								scope.path = scope[path[0]][path[1]] = [];
+							} else {
+								scope.path = scope[path[0]][path[1]];
+							}
+						}
+					// }
+
+					scope.parsePath();
+
+					scope.watchPath();
+
+					scope.schemaName = attrs.schema;
+
+
+
 				}
 			}
 		}

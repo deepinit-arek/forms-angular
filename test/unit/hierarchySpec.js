@@ -1,23 +1,6 @@
 describe('fng-hierarchy-master directive', function() {
 	var elm, scope, $httpBackend, loadHierarchyList, loadForm;
 
-
-
-	function jsonify(obj) {
-
-		var seen = [];
-
-		return JSON.stringify(obj, function(key, val) {
-			if (typeof val == "object") {
-				if (seen.indexOf(val) >= 0)
-					return
-				seen.push(val)
-			}
-			return val
-		});
-
-	}
-
 	// load the form code
 	beforeEach(function() {
 		angular.mock.module('formsAngular');
