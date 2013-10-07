@@ -69,6 +69,8 @@ formsAngular
 
 					scope.schemaName = attrs.schema;
 
+
+
 					scope.add = function() {
 
 						var arrayField;
@@ -94,8 +96,23 @@ formsAngular
 						var arrayField = scope.add();
 
 						arrayField.push({
-							elementNo: arrayField.length
+							elementNo: scope.getNextElementNo(arrayField)
 						});
+					}
+
+					 scope.getNextElementNo = function(arrayField) {
+
+						var elementArray = [];
+
+						for (var i = arrayField.length - 1; i >= 0; i--) {
+							elementArray.push (arrayField[i].elementNo);
+						};
+
+						elementArray.sort();
+
+						return elementArray[elementArray.length-1] + 1;
+						
+
 					}
 				}
 			}

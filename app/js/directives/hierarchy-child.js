@@ -120,7 +120,7 @@ formsAngular
                         var arrayField = scope.add();
 
                         arrayField.push({
-                            elementNo: arrayField.length,
+                            elementNo: scope.getNextElementNo(arrayField),
                             parent: parent
 
                         });
