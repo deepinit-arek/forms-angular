@@ -18,7 +18,7 @@ formsAngular
                         'jqyoui-draggable="{animate:true}" data-drag="true" data-jqyoui-options="{revert: true}">' +
                             '<div ng-switch on="toggleEditableElement">' +
                                 '<div ng-switch-when="true" ng-class= "{hoverindicator: hoverLine}" data-drop="true" jqyoui-droppable="{animate:true, onDrop: \'onDrop\', onOver: \'onOver\', onOut: \'onOut\'}"> ' +
-                                    '<span class="name" ng-click="toggleChildren()"><i class="{{iconType}}"></i>{{field.name}}</span>' +
+                                    '<span class="name"><i class="{{iconType}}" ng-click="toggleChildren()"></i>{{field.name}}</span>' +
                                     '<span class="label">' +
                                         '<span ng-if="field.label.length > 0">{{field.label}}</span>' +
                                         '<span ng-if="field.label == undefined">empty</span>' +
@@ -55,7 +55,7 @@ formsAngular
                     $compile($template)(scope);
                     element.append($template);
 
-                    scope.index = getIndex(scope.model, scope.field.elementNo);
+                    scope.index = scope.getIndex(scope.model, scope.field.elementNo);
 
                     scope.toggleChildElement = true;
 
@@ -83,26 +83,11 @@ formsAngular
 
                     }
 
-                    function getIndex(model, elementNo) {
-
-                        var record = scope.record,
-                            index = -1;
-
-                        for (var i = 0; i < record[model].length; i++) {
-                            if (record[model][i]['elementNo'] === elementNo) {
-                                return i;
-                            }
-                        }
-
-                        return i;
-
-                    }
+                    
 
                     scope.hoverLine = false;
 
                     scope.onDrop = function(event, ui) {
-
-                        // event.stopPropagation();
 
                         var element = angular.element(event.target).scope().field;
 
@@ -110,22 +95,16 @@ formsAngular
 
                         if (element.type === 'container') {
 
-                            
+                            var childElementNo = ui.draggable.scope().field.elementNo
+                            , index = scope.getIndex('Hierarchy', childElementNo)
+                            , currentParent = scope.record.Hierarchy[index].parent;
 
-                            var childElementNo = ui.draggable.scope().field.elementNo;
+                            if (currentParent !== newParentElementNo) {
 
-                            var index = getIndex('Hierarchy', childElementNo);
-
-                            scope.record.Hierarchy[index].parent = newParentElementNo;
-
-
-
-                            // ui.draggable.scope().field.parent = angular.element(event.target).scope().field.elementNo;
-
-                            scope.parsePath();
-
+                                scope.record.Hierarchy[index].parent = newParentElementNo;
+                                scope.parsePath();
+                            }
                         }
-
 
                         scope.onOut(event, ui);
 
@@ -135,33 +114,43 @@ formsAngular
 
                     scope.onOver = function(event, ui) {
 
-                        // console.log(scope.hoverLine);
+                        var droppable = angular.element(event.target).scope().field
+                        , draggable = ui.draggable.scope().field
+                        , childElementNo = draggable.elementNo
+                        , index = scope.getIndex('Hierarchy', childElementNo)
+                        , currentParent = scope.record.Hierarchy[index].parent //TODO here!
+                        , newParentElementNo = droppable.elementNo;
 
-                        var element = angular.element(event.target).scope().field;
 
-                        if (element.type === 'container') {
+                        if (droppable.type === 'container' && currentParent !== newParentElementNo) {
 
-                            scope.hoverLine = !scope.hoverLine;
+                                scope.hoverLine = !scope.hoverLine;
 
-                            scope.$apply();
+                                scope.$apply();
+
+                            }
                         }
-
-
-                    }
 
                     scope.onOut = function(event, ui) {
 
-                        var element = angular.element(event.target).scope().field;
+                        var droppable = angular.element(event.target).scope().field
+                        , draggable = ui.draggable.scope().field
+                        , childElementNo = draggable.elementNo
+                        , index = scope.getIndex('Hierarchy', childElementNo)
+                        , currentParent = scope.record.Hierarchy[index].parent //TODO here!
+                        , newParentElementNo = droppable.elementNo;
 
-                        if (element.type === 'container') {
 
-                            scope.hoverLine = !scope.hoverLine;
+                        if (droppable.type === 'container' && currentParent !== newParentElementNo) {
 
-                            scope.$apply();
+                                scope.hoverLine = !scope.hoverLine;
 
+                                scope.$apply();
+
+                            }
                         }
 
-                    }
+                    
 
                     scope.toggleEditableElement = (scope.field.name !== '' ? true : false);
 
@@ -175,7 +164,7 @@ formsAngular
 
                     scope.editElement = function() {
 
-                        // var index = getIndex(scope.model, field.elementNo);
+                        // var index = scope.getIndex(scope.model, field.elementNo);
 
                         scope.toggleEditableElement = !scope.toggleEditableElement;
 
@@ -202,7 +191,7 @@ formsAngular
 
                         if (proceed) {
 
-                            index = getIndex(model, elementNo)
+                            index = scope.getIndex(model, elementNo)
 
                             if (index !== -1) {
                                 scope.remove(model, index);

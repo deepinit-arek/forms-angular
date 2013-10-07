@@ -19,17 +19,52 @@ formsAngular
 
 				post: function(scope, element, attrs) {
 
+					scope.hoverLine = false;
+
 					//FUNCTION DEFINITIONS
 
+					scope.getIndex = function(model, elementNo) {
+
+					    var record = scope.record,
+					        index = -1;
+
+					    for (var i = 0; i < record[model].length; i++) {
+					        if (record[model][i]['elementNo'] === elementNo) {
+					            return i;
+					        }
+					    }
+
+					    return i;
+
+					}
+
 					scope.onDrop = function (event, ui) {
+
+						var childElementNo = ui.draggable.scope().field.elementNo;
+
+						var index = scope.getIndex('Hierarchy', childElementNo);
+
+						scope.record.Hierarchy[index].parent = undefined;
+
+						scope.masterOnOut(event, ui);
+
+						scope.parsePath();
 
 					}
 
 					scope.onOver = function (event, ui) {
+
+						scope.hoverLine = !scope.hoverLine;
+						scope.$apply();
 						
 					}
 
-					scope.onOut = function (event, ui) {
+					scope.masterOnOut = function (event, ui) {
+
+						scope.hoverLine = !scope.hoverLine;
+						scope.$apply();
+
+
 						
 					}
 					
@@ -97,13 +132,20 @@ formsAngular
 
 					    var element = angular.element(event.target).scope().field;
 
-					    if (element.type === 'container') {
+					    if (element !== undefined) {
 
-					        scope.hoverLine = !scope.hoverLine;
+					    	if (element.type === 'container') {
 
-					        scope.$apply();
+					    	    scope.hoverLine = !scope.hoverLine;
+
+					    	    scope.$apply();
+
+					    	}	
+					    } else {
 
 					    }
+
+					    
 
 					}
 
