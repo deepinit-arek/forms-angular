@@ -21,7 +21,19 @@ formsAngular
 
 					//FUNCTION DEFINITIONS
 
-					scope.parsePath = function parsePath() {
+					scope.onDrop = function (event, ui) {
+
+					}
+
+					scope.onOver = function (event, ui) {
+						
+					}
+
+					scope.onOut = function (event, ui) {
+						
+					}
+					
+					scope.parsePath = function () {
 
 						scope.hier = utils.createFormSchema(scope.path);
 					}
@@ -65,7 +77,7 @@ formsAngular
 						for (var i = arrayField.length - 1; i >= 0; i--) {
 							elementArray.push(arrayField[i].elementNo);
 						};
-						
+
 						elementArray.sort(function compareNumbers(a, b) {  return a - b;});
 
 						return elementArray[elementArray.length - 1] + 1;
@@ -80,6 +92,22 @@ formsAngular
 							elementNo: scope.getNextElementNo(arrayField)
 						});
 					}
+
+					scope.onOut = function(event, ui) {
+
+					    var element = angular.element(event.target).scope().field;
+
+					    if (element.type === 'container') {
+
+					        scope.hoverLine = !scope.hoverLine;
+
+					        scope.$apply();
+
+					    }
+
+					}
+
+
 
 					//MAIN
 

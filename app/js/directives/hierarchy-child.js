@@ -14,49 +14,74 @@ formsAngular
                 post: function(scope, element, attrs) {
 
                     var template =
-                        '<div class="hierarchy-list {{field.dataType}}" jqyoui-droppable="{animate:true}" jqyoui-draggable="{animate:true}" data-drop="true" data-drag="true" data-jqyoui-options="{revert: true}">' +
-                        '<div ng-switch on="toggleCPElement">' +
-                        '<div ng-switch-when="true">' +
-                        '<span class="name"><i class="{{iconType}}"></i>{{field.name}}</span>' +
-                        '<span class="label">' +
-                        '<span ng-if="field.label.length > 0">{{field.label}}</span>' +
-                        '<span ng-if="field.label == undefined">empty</span>' +
-                        '</span>' +
-                        '<span class="controls">' +
-                        '<span ng-if="field.type == \'container\'">' +
-                        '<i class="icon-plus-sign" ng-click="addChild($event, field.elementNo)"></i>' +
-                        '</span>' +
-                    //call to removeLine
-                    '<i class="icon-minus-sign" ng-click="removeLine(\'{{model}}\', {{field.elementNo}})"></i>' +
-                        '<span ng-if="field.type != \'container\'">' +
-                        '<i class="icon"></i>' +
-                        '</span>' +
-                        '<i class="icon-edit" ng-click="editElement()"></i>' +
-                        '<i class="icon-move" data-drag="true"></i>' +
-                        '</span>' +
-                        '<div ng-switch on="toggleChildElement">' +
-                        '<div ng-switch-when="true">' +
-                        '<!-- <fng-hierarchy-list data-record="test" data-child="true"></fng-hierarchy-list> -->' +
-                        '<!-- <fng-hierarchy-child ng-repeat=\'field in field.content\'></fng-hierarchy-child> -->' +
-                        '<button btn ng-click="saveElement()">done</button>' +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div ng-switch-when="false">' +
-                        '<form-input schema="{{schemaName}}" subschema="true" elementNo="{{field.elementNo}}"></form-input>' +
-                        '<button btn ng-click="updateElement()">done</button>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="children" ng-if="field.content">' +
-                        '<span ng-if="field.content != undefined">' +
-                        '<fng-hierarchy-child ng-repeat=\'field in field.content\'></fng-hierarchy-child>' +
-                        '</span>' +
-                        '</div>' +
+                        '<div class="hierarchy-list {{field.dataType}}" ' +
+                        'jqyoui-draggable="{animate:true}" data-drag="true" data-jqyoui-options="{revert: true}">' +
+                            '<div ng-switch on="toggleEditableElement">' +
+                                '<div ng-switch-when="true" ng-class= "{hoverindicator: hoverLine}" data-drop="true" jqyoui-droppable="{animate:true, onDrop: \'onDrop\', onOver: \'onOver\', onOut: \'onOut\'}"> ' +
+                                    '<span class="name" ng-click="toggleChildren()"><i class="{{iconType}}"></i>{{field.name}}</span>' +
+                                    '<span class="label">' +
+                                        '<span ng-if="field.label.length > 0">{{field.label}}</span>' +
+                                        '<span ng-if="field.label == undefined">empty</span>' +
+                                    '</span>' +
+                                    '<span class="controls">' +
+                                        '<span ng-if="field.type == \'container\'">' +
+                                            '<i class="icon-plus-sign" ng-click="addChild($event, field.elementNo)"></i>' +
+                                        '</span>' +
+                                        //call to removeLine
+                                        '<i class="icon-minus-sign" ng-click="removeLine(\'{{model}}\', {{field.elementNo}})"></i>' +
+                                        '<span ng-if="field.type != \'container\'">' +
+                                            '<i class="icon"></i>' +
+                                        '</span>' +
+                                        '<i class="icon-edit" ng-click="editElement()"></i>' +
+                                    '</span>' +
+                                '</div>' +
+                                '<div ng-switch-when="false">' +
+                                    '<form-input schema="{{schemaName}}" subschema="true" elementNo="{{field.elementNo}}" index={{index}}></form-input>' +
+                                    '<button btn ng-click="updateElement()">done</button>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="children" ng-if="field.content">' +
+                                '<span ng-if="field.content != undefined">' +
+                                    '<span ng-switch on="toggleChildElement">' +
+                                        '<span ng-switch-when="true">' +
+                                            '<fng-hierarchy-child ng-repeat=\'field in field.content\'></fng-hierarchy-child>' +
+                                        '</span>' +
+                                    '</span>' +
+                                '</span>' +
+                            '</div>' +
                         '</div>';
 
                     var $template = angular.element(template);
                     $compile($template)(scope);
                     element.append($template);
+
+                    scope.index = getIndex(scope.model, scope.field.elementNo);
+
+                    scope.toggleChildElement = true;
+
+                    toggleFolderIcon();
+
+                    function toggleFolderIcon() {
+
+                        if (scope.field.type === 'container') {
+
+                            if (scope.toggleChildElement === true) {
+                                scope.iconType = 'icon-folder-open';
+                            } else {
+                                scope.iconType = 'icon-folder-close';
+                            }
+
+                    } else {
+                        scope.iconType = 'icon-file';
+                    }
+
+                }
+
+                    scope.toggleChildren = function () {
+                        scope.toggleChildElement =  !scope.toggleChildElement;
+                        toggleFolderIcon();
+
+                    }
 
                     function getIndex(model, elementNo) {
 
@@ -69,56 +94,119 @@ formsAngular
                             }
                         }
 
+                        return i;
+
                     }
 
-                    scope.toggleCPElement = (scope.field.name !== '' ? true : false);
+                    scope.hoverLine = false;
+
+                    scope.onDrop = function(event, ui) {
+
+                        // event.stopPropagation();
+
+                        var element = angular.element(event.target).scope().field;
+
+                        var newParentElementNo = element.elementNo;
+
+                        if (element.type === 'container') {
+
+                            
+
+                            var childElementNo = ui.draggable.scope().field.elementNo;
+
+                            var index = getIndex('Hierarchy', childElementNo);
+
+                            scope.record.Hierarchy[index].parent = newParentElementNo;
+
+
+
+                            // ui.draggable.scope().field.parent = angular.element(event.target).scope().field.elementNo;
+
+                            scope.parsePath();
+
+                        }
+
+
+                        scope.onOut(event, ui);
+
+
+
+                    }
+
+                    scope.onOver = function(event, ui) {
+
+                        // console.log(scope.hoverLine);
+
+                        var element = angular.element(event.target).scope().field;
+
+                        if (element.type === 'container') {
+
+                            scope.hoverLine = !scope.hoverLine;
+
+                            scope.$apply();
+                        }
+
+
+                    }
+
+                    scope.onOut = function(event, ui) {
+
+                        var element = angular.element(event.target).scope().field;
+
+                        if (element.type === 'container') {
+
+                            scope.hoverLine = !scope.hoverLine;
+
+                            scope.$apply();
+
+                        }
+
+                    }
+
+                    scope.toggleEditableElement = (scope.field.name !== '' ? true : false);
 
                     scope.updateElement = function() {
 
                         scope.parsePath();
 
-                        scope.toggleCPElement = !scope.toggleCPElement;
+                        scope.toggleEditableElement = !scope.toggleEditableElement;
 
                     }
 
                     scope.editElement = function() {
 
-                        scope.toggleCPElement = !scope.toggleCPElement;
+                        // var index = getIndex(scope.model, field.elementNo);
+
+                        scope.toggleEditableElement = !scope.toggleEditableElement;
 
                     }
 
                     scope.removeLine = function(model, elementNo) {
 
                         var record = scope.record,
-                            index = -1
-                            , proceed;
+                            index = -1,
+                            proceed;
 
-                        if (scope.field.content) {//its got children - do you want to delete them?
+                        if (scope.field.content) { //its got children - do you want to delete them?
                             proceed = false;
+
+                            scope.errorMessage = 'Error';
+
+
+                            // scope.alertTitle = alertTitle ? alertTitle : "Error!";
+                            // scope.errorMessage = 'errString';
+
                         } else {
                             proceed = true;
                         }
 
                         if (proceed) {
 
-                            for (var i = 0; i < record[model].length; i++) {
-                                if (record[model][i]['elementNo'] === elementNo) {
-                                    index = i;
-                                    break;
-                                }
-                            }
+                            index = getIndex(model, elementNo)
 
                             if (index !== -1) {
                                 scope.remove(model, index);
                             };
-
-                        }
-
-                    }
-
-                    scope.updateView = function() {
-
-                        if (scope.$last) {
 
                         }
 
