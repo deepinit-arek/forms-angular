@@ -43,7 +43,7 @@ formsAngular
                             '<div class="children" ng-if="field.content">' +
                                 '<span ng-if="field.content != undefined">' +
                                     '<span ng-switch on="toggleChildElement">' +
-                                        '<span ng-switch-when="true">' +
+                                        '<span ng-switch-when="true" ui-sortable ng-model="field.content">' +
                                             '<fng-hierarchy-child ng-repeat=\'field in field.content\'></fng-hierarchy-child>' +
                                         '</span>' +
                                     '</span>' +
