@@ -1,4 +1,4 @@
-describe('fng-hierarchy-master directive', function() {
+describe('fng-hierarchy directives', function() {
 	var elm, scope, $httpBackend, loadHierarchyList, loadForm;
 
 	// load the form code
@@ -24,12 +24,12 @@ describe('fng-hierarchy-master directive', function() {
 						"name": "This is a new hierarchy",
 						"dataType": "container"
 					}, {
-						"elementNo": 1,
+						"elementNo": 15,
 						"parent": 0,
 						"name": "lower",
 						"dataType": "text"
 					}, {
-						"elementNo": 2,
+						"elementNo": 13,
 						"name": "secon"
 					}]
 				};
@@ -141,6 +141,23 @@ describe('fng-hierarchy-master directive', function() {
 
 	});
 
+
+	it('should return the correct elementNo when adding a new element', function() {
+
+		var el = elm.find('input');
+		expect(el.length).toBe(0);
+		var add = elm.find('.icon-plus-sign');
+
+		//second element in declaration above has highest elementNo.
+		var highestElementNo = 15;
+
+		$(add[add.length-1]).click();
+
+		expect(scope.record.Hierarchy[scope.record.Hierarchy.length-1].elementNo).toBe(highestElementNo+1);
+
+
+
+	});
 
 
 });
