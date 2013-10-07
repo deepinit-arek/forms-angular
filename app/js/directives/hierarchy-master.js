@@ -109,9 +109,6 @@ formsAngular
 					scope.watchPath();
 
 					scope.schemaName = attrs.schema;
-
-
-
 				}
 			}
 		}
