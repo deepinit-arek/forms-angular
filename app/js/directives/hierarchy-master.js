@@ -65,8 +65,8 @@ formsAngular
 						for (var i = arrayField.length - 1; i >= 0; i--) {
 							elementArray.push(arrayField[i].elementNo);
 						};
-
-						elementArray.sort();
+						
+						elementArray.sort(function compareNumbers(a, b) {  return a - b;});
 
 						return elementArray[elementArray.length - 1] + 1;
 

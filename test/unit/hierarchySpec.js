@@ -29,7 +29,7 @@ describe('fng-hierarchy directives', function() {
 						"name": "lower",
 						"dataType": "text"
 					}, {
-						"elementNo": 13,
+						"elementNo": 4,
 						"name": "secon"
 					}]
 				};
@@ -111,11 +111,24 @@ describe('fng-hierarchy directives', function() {
 	it('should remove a hierarchy element', function() {
 
 		var el = elm.find('i.icon-minus-sign');
+
+
 		expect(el.length).toBe(3);
-		$(el[1]).click();
+		$(el[2]).click();
 		el = elm.find('i.icon-minus-sign');
 		expect(el.length).toBe(2);
 
+	});
+
+	it('should not remove a hierarchy element if it has children', function() {
+
+		var el = elm.find('i.icon-minus-sign');
+
+
+		expect(el.length).toBe(3);
+		$(el[0]).click();
+		el = elm.find('i.icon-minus-sign');
+		expect(el.length).toBe(3);
 
 	});
 
@@ -147,16 +160,10 @@ describe('fng-hierarchy directives', function() {
 		var el = elm.find('input');
 		expect(el.length).toBe(0);
 		var add = elm.find('.icon-plus-sign');
-
 		//second element in declaration above has highest elementNo.
 		var highestElementNo = 15;
-
 		$(add[add.length-1]).click();
-
 		expect(scope.record.Hierarchy[scope.record.Hierarchy.length-1].elementNo).toBe(highestElementNo+1);
-
-
-
 	});
 
 

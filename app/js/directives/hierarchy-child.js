@@ -37,7 +37,7 @@ formsAngular
                         '<div ng-switch on="toggleChildElement">' +
                         '<div ng-switch-when="true">' +
                         '<!-- <fng-hierarchy-list data-record="test" data-child="true"></fng-hierarchy-list> -->' +
-                        '<!-- <fng-hierarchy-child ng-repeat=\'field in field.content\' track by elementNo></fng-hierarchy-child> -->' +
+                        '<!-- <fng-hierarchy-child ng-repeat=\'field in field.content\'></fng-hierarchy-child> -->' +
                         '<button btn ng-click="saveElement()">done</button>' +
                         '</div>' +
                         '</div>' +
@@ -49,7 +49,7 @@ formsAngular
                         '</div>' +
                         '<div class="children" ng-if="field.content">' +
                         '<span ng-if="field.content != undefined">' +
-                        '<fng-hierarchy-child ng-repeat=\'field in field.content\' track by elementNo></fng-hierarchy-child>' +
+                        '<fng-hierarchy-child ng-repeat=\'field in field.content\'></fng-hierarchy-child>' +
                         '</span>' +
                         '</div>' +
                         '</div>';
@@ -90,20 +90,29 @@ formsAngular
                     scope.removeLine = function(model, elementNo) {
 
                         var record = scope.record,
-                            index = -1;
+                            index = -1
+                            , proceed;
 
-                        //find index
-
-                        for (var i = 0; i < record[model].length; i++) {
-                            if (record[model][i]['elementNo'] === elementNo) {
-                                index = i;
-                                break;
-                            }
+                        if (scope.field.content) {//its got children - do you want to delete them?
+                            proceed = false;
+                        } else {
+                            proceed = true;
                         }
 
-                        if (index !== -1) {
-                            scope.remove(model, index);
-                        };
+                        if (proceed) {
+
+                            for (var i = 0; i < record[model].length; i++) {
+                                if (record[model][i]['elementNo'] === elementNo) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+
+                            if (index !== -1) {
+                                scope.remove(model, index);
+                            };
+
+                        }
 
                     }
 
