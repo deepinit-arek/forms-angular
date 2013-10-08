@@ -194,10 +194,6 @@ formsAngular
 
                             scope.$emit('showErrorMessage', {title: 'You can\'t do that', body: 'The element you are trying to delete has children. Please remove them first.'});
 
-
-                            // scope.alertTitle = alertTitle ? alertTitle : "Error!";
-                            // scope.errorMessage = 'errString';
-
                         } else {
                             proceed = true;
                         }

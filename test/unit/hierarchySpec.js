@@ -197,7 +197,6 @@ describe('fng-hierarchy directives', function() {
 			$(edit[0]).click();
 			el = elm.find('input');
 			expect(el.length).toBe(2);
-			// dump(scope);
 
 		});
 
@@ -211,6 +210,18 @@ describe('fng-hierarchy directives', function() {
 			var highestElementNo = 15;
 			$(add[add.length - 1]).click();
 			expect(scope.record.Hierarchy[scope.record.Hierarchy.length - 1].elementNo).toBe(highestElementNo + 1);
+		});
+
+		it('should emit showErrorMessage event if you try to delete a container with children', function() {
+
+
+			spyOn(scope, "$emit");	
+
+			var remove = elm.find('.icon-minus-sign');
+
+			$(remove[0]).click();
+
+			expect(scope.$emit).toHaveBeenCalledWith('showErrorMessage', {title: 'You can\'t do that', body: 'The element you are trying to delete has children. Please remove them first.'});
 		});
 
 	});
