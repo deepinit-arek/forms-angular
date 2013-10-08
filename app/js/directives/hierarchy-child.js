@@ -8,6 +8,16 @@ formsAngular
 
         replace: true,
 
+        // controller: function ($scope, $element, $attrs, $transclude) {
+
+        //    console.log($scope.hier);
+        //    console.log($scope.hier[0].content);
+
+        //     $scope.myTestfunction = function () {
+        //         var a = 10;
+        //     }
+        // },
+
         compile: function(tElement, tAttrs, transclude) {
 
             return {
@@ -89,6 +99,8 @@ formsAngular
 
                     scope.onDrop = function(event, ui) {
 
+                        console.log('wooohohohohho');
+
                         var element = angular.element(event.target).scope().field;
 
                         var newParentElementNo = element.elementNo;
@@ -103,13 +115,13 @@ formsAngular
 
                                 scope.record.Hierarchy[index].parent = newParentElementNo;
                                 scope.parsePath();
+
+                                scope.hoverLine = !scope.hoverLine;
+
+                                scope.$apply();
+
                             }
                         }
-
-                        scope.onOut(event, ui);
-
-
-
                     }
 
                     scope.onOver = function(event, ui) {
@@ -155,6 +167,9 @@ formsAngular
                     scope.toggleEditableElement = (scope.field.name !== '' ? true : false);
 
                     scope.updateElement = function() {
+
+                        //check if this is container with children.
+                        //if so don't allow change from container
 
                         scope.parsePath();
 
