@@ -99,8 +99,6 @@ formsAngular
 
                     scope.onDrop = function(event, ui) {
 
-                        console.log('wooohohohohho');
-
                         var element = angular.element(event.target).scope().field;
 
                         var newParentElementNo = element.elementNo;
@@ -194,7 +192,7 @@ formsAngular
                         if (scope.field.content) { //its got children - do you want to delete them?
                             proceed = false;
 
-                            scope.errorMessage = 'Error';
+                            scope.$emit('showErrorMessage', {title: 'You can\'t do that', body: 'The element you are trying to delete has children. Please remove them first.'});
 
 
                             // scope.alertTitle = alertTitle ? alertTitle : "Error!";
