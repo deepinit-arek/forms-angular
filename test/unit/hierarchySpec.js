@@ -226,7 +226,7 @@ describe('fng-hierarchy directives', function() {
 
 	});
 
-	xdescribe('drag drop functions', function() {
+	describe('drag drop functions', function() {
 
 		beforeEach(function() {
 
@@ -243,6 +243,10 @@ describe('fng-hierarchy directives', function() {
 					scope.record.Hierarchy.pop();
 				}
 
+				// scope.onDrop = function() {
+				// 	return true;
+				// }
+
 				scope.record = recordData;
 
 				scope.formSchema = formSchema;
@@ -258,6 +262,11 @@ describe('fng-hierarchy directives', function() {
 				elm = angular.element(template);
 				$compile(elm)(scope);
 				scope.$digest();
+
+				ctrl = $controller("fngHierarchyList.controller", {
+                    $scope: scope,
+                });
+
 				$httpBackend.flush();
 
 			});
@@ -269,12 +278,16 @@ describe('fng-hierarchy directives', function() {
 
 		iit('should change the parent when dragging and dropping', function() {
 
-			// var els = elm.find('.hierarchy-list');
-			// var kids = $(els[0]).find('fng-hierarchy-child');
+			var els = elm.find('.hierarchy-list');
+			var kids = $(els[0]).find('fng-hierarchy-child');
 
-			// dump(scope);
+			// expect (kids.length)
 
-			spyOn(scope, 'add');
+			var theScope = elm.scope();
+
+			dump(kids.length);
+
+			spyOn(scope, 'onDrop').andCallThrough();
 
 			// var dropel = 
 
@@ -290,7 +303,12 @@ describe('fng-hierarchy directives', function() {
 
 			// ngDragDropService.invokeDrop(angular.element(els[2]),angular.element(els[0]),document.createEvent('Event'),{});
 
-			// ngDragDropService.callEventCallback(scope, (scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')) || []).onDrop, document.createEvent('Event'), {}); 
+			ngDragDropService.callEventCallback(scope, (scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')) || []).onDrop, document.createEvent('Event'), {}); 
+
+			expect(scope.onDrop).toHaveBeenCalled();
+
+			dump(kids.length);
+
 			// ngDragDropService.callEventCallback(scope, 'onDrop', document.createEvent('Event'), {}); 
 
 			// ngDragDropService.invokeDrop(

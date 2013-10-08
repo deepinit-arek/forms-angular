@@ -103,8 +103,6 @@ formsAngular
 			
 			$scope.parsePath = function () {
 
-
-
 				$scope.hier = utils.createFormSchema($scope.path);
 			}
 

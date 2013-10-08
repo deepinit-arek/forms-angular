@@ -1,6 +1,6 @@
 formsAngular
 
-.directive('fngHierarchyChild', function($compile, ngDragDropService) {
+.directive('fngHierarchyChild', function($compile, ngDragDropService, $timeout) {
 
     return {
 
@@ -9,6 +9,7 @@ formsAngular
         replace: true,
 
         controller: function ($scope, $element, $attrs, $transclude) {
+
 
             $scope.index = $scope.getIndex($scope.model, $scope.field.elementNo);
 
@@ -43,6 +44,8 @@ formsAngular
                 $scope.hoverLine = false;
 
                 $scope.onDrop = function(event, ui) {
+
+                    console.log('just my little test');
 
                     var element = angular.element(event.target).scope().field;
 
@@ -114,6 +117,10 @@ formsAngular
                     //check if this is container with children.
                     //if so don't allow change from container
 
+                    if ($scope.field.content) {
+
+                    } 
+
                     $scope.parsePath();
 
                     $scope.toggleEditableElement = !$scope.toggleEditableElement;
@@ -125,6 +132,8 @@ formsAngular
                     // var index = $scope.getIndex($scope.model, field.elementNo);
 
                     $scope.toggleEditableElement = !$scope.toggleEditableElement;
+
+
 
                 }
 
@@ -215,10 +224,6 @@ formsAngular
                     var $template = angular.element(template);
                     $compile($template)(scope);
                     element.append($template);
-
-                    
-
-                   
                 }
             }
         }
