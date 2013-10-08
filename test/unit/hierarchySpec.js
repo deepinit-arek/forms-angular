@@ -234,6 +234,7 @@ describe('fng-hierarchy directives', function() {
 
 				ngDragDropService = _ngDragDropService_;
 
+
 				$timeout = _$timeout_;
 
 				$httpBackend = _$httpBackend_;
@@ -262,12 +263,9 @@ describe('fng-hierarchy directives', function() {
 				elm = angular.element(template);
 				$compile(elm)(scope);
 				scope.$digest();
-
-				ctrl = $controller("fngHierarchyList.controller", {
-                    $scope: scope,
-                });
-
 				$httpBackend.flush();
+
+				ctrl = $controller("fngHierarchyListCtrl", {$scope: scope, $element: elm, $attrs: {}, $transclude: {}});
 
 			});
 		});
@@ -276,47 +274,18 @@ describe('fng-hierarchy directives', function() {
 
 		// 
 
-		iit('should change the parent when dragging and dropping', function() {
+		it('should change the parent when dragging and dropping', function() {
 
 			var els = elm.find('.hierarchy-list');
 			var kids = $(els[0]).find('fng-hierarchy-child');
 
-			// expect (kids.length)
-
-			var theScope = elm.scope();
-
-			dump(kids.length);
-
 			spyOn(scope, 'onDrop').andCallThrough();
-
-			// var dropel = 
-
-			// dump((scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')) || []).onDrop);
-
-			// dump(scope.$eval(angular.element(els[1]).attr('jqyoui-droppable')));
-			// dump(angular.element(els[0]));
-			// dump(scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')).onDrop);
-
-			// dump(angular.element(els[0].find('.ui-droppable')).attr('jqyoui-droppable'));
-// 
-			// dump(angular.element(els[0]).find('ui-droppable').attr('jqyoui-draggable'));
-
-			// ngDragDropService.invokeDrop(angular.element(els[2]),angular.element(els[0]),document.createEvent('Event'),{});
 
 			ngDragDropService.callEventCallback(scope, (scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')) || []).onDrop, document.createEvent('Event'), {}); 
 
+			// ngDragDropService.callEventCallback(scope, 'onDrop', document.createEvent('Event'), {}); 
 			expect(scope.onDrop).toHaveBeenCalled();
 
-			dump(kids.length);
-
-			// ngDragDropService.callEventCallback(scope, 'onDrop', document.createEvent('Event'), {}); 
-
-			// ngDragDropService.invokeDrop(
-			//    $('<div data-drag="true" ng-model="list1" jqyoui-draggable="{index: 0, placeholder:true}">' + scope.list1[0].title + '</div>').data('$scope', scope),
-			//    $('<div data-drop="true" ng-model="list2" jqyoui-droppable="{index: 0}"></div>').data('$scope', scope),
-			//    document.createEvent('Event'),
-			//    {}
-			//  );
 
 		});
 

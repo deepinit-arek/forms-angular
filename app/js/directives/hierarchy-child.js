@@ -8,6 +8,8 @@ formsAngular
 
         replace: true,
 
+        require: '^fngHierarchyList',
+
         controller: function ($scope, $element, $attrs, $transclude) {
 
 
