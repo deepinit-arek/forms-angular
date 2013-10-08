@@ -8,15 +8,166 @@ formsAngular
 
         replace: true,
 
-        // controller: function ($scope, $element, $attrs, $transclude) {
+        controller: function ($scope, $element, $attrs, $transclude) {
 
-        //    console.log($scope.hier);
-        //    console.log($scope.hier[0].content);
+            $scope.index = $scope.getIndex($scope.model, $scope.field.elementNo);
 
-        //     $scope.myTestfunction = function () {
-        //         var a = 10;
-        //     }
-        // },
+                $scope.toggleChildElement = true;
+
+                toggleFolderIcon();
+
+                function toggleFolderIcon() {
+
+                    if ($scope.field.type === 'container') {
+
+                        if ($scope.toggleChildElement === true) {
+                            $scope.iconType = 'icon-folder-open';
+                        } else {
+                            $scope.iconType = 'icon-folder-close';
+                        }
+
+                } else {
+                    $scope.iconType = 'icon-file';
+                }
+
+            }
+
+                $scope.toggleChildren = function () {
+                    $scope.toggleChildElement =  !$scope.toggleChildElement;
+                    toggleFolderIcon();
+
+                }
+
+                
+
+                $scope.hoverLine = false;
+
+                $scope.onDrop = function(event, ui) {
+
+                    var element = angular.element(event.target).scope().field;
+
+                    var newParentElementNo = element.elementNo;
+
+                    if (element.type === 'container') {
+
+                        var childElementNo = ui.draggable.scope().field.elementNo
+                        , index = $scope.getIndex('Hierarchy', childElementNo)
+                        , currentParent = $scope.record.Hierarchy[index].parent;
+
+                        if (currentParent !== newParentElementNo) {
+
+                            $scope.record.Hierarchy[index].parent = newParentElementNo;
+                            $scope.parsePath();
+
+                            $scope.hoverLine = !$scope.hoverLine;
+
+                            $scope.$apply();
+
+                        }
+                    }
+                }
+
+                $scope.onOver = function(event, ui) {
+
+                    var droppable = angular.element(event.target).scope().field
+                    , draggable = ui.draggable.scope().field
+                    , childElementNo = draggable.elementNo
+                    , index = $scope.getIndex('Hierarchy', childElementNo)
+                    , currentParent = $scope.record.Hierarchy[index].parent //TODO here!
+                    , newParentElementNo = droppable.elementNo;
+
+
+                    if (droppable.type === 'container' && currentParent !== newParentElementNo) {
+
+                            $scope.hoverLine = !$scope.hoverLine;
+
+                            $scope.$apply();
+
+                        }
+                    }
+
+                $scope.onOut = function(event, ui) {
+
+                    var droppable = angular.element(event.target).scope().field
+                    , draggable = ui.draggable.scope().field
+                    , childElementNo = draggable.elementNo
+                    , index = $scope.getIndex('Hierarchy', childElementNo)
+                    , currentParent = $scope.record.Hierarchy[index].parent //TODO here!
+                    , newParentElementNo = droppable.elementNo;
+
+
+                    if (droppable.type === 'container' && currentParent !== newParentElementNo) {
+
+                            $scope.hoverLine = !$scope.hoverLine;
+
+                            $scope.$apply();
+
+                        }
+                    }
+
+                
+
+                $scope.toggleEditableElement = ($scope.field.name !== '' ? true : false);
+
+                $scope.updateElement = function() {
+
+                    //check if this is container with children.
+                    //if so don't allow change from container
+
+                    $scope.parsePath();
+
+                    $scope.toggleEditableElement = !$scope.toggleEditableElement;
+
+                }
+
+                $scope.editElement = function() {
+
+                    // var index = $scope.getIndex($scope.model, field.elementNo);
+
+                    $scope.toggleEditableElement = !$scope.toggleEditableElement;
+
+                }
+
+                $scope.removeLine = function(model, elementNo) {
+
+                    var record = $scope.record,
+                        index = -1,
+                        proceed;
+
+                    if ($scope.field.content) { //its got children - do you want to delete them?
+                        proceed = false;
+
+                        $scope.$emit('showErrorMessage', {title: 'You can\'t do that', body: 'The element you are trying to delete has children. Please remove them first.'});
+
+                    } else {
+                        proceed = true;
+                    }
+
+                    if (proceed) {
+
+                        index = $scope.getIndex(model, elementNo)
+
+                        if (index !== -1) {
+                            $scope.remove(model, index);
+                        };
+
+                    }
+
+                }
+
+                $scope.addChild = function(ev, parent) {
+
+                    var arrayField = $scope.add();
+
+                    arrayField.push({
+                        elementNo: $scope.getNextElementNo(arrayField),
+                        parent: parent
+
+                    });
+                }
+
+
+        },
 
         compile: function(tElement, tAttrs, transclude) {
 
@@ -65,161 +216,9 @@ formsAngular
                     $compile($template)(scope);
                     element.append($template);
 
-                    scope.index = scope.getIndex(scope.model, scope.field.elementNo);
-
-                    scope.toggleChildElement = true;
-
-                    toggleFolderIcon();
-
-                    function toggleFolderIcon() {
-
-                        if (scope.field.type === 'container') {
-
-                            if (scope.toggleChildElement === true) {
-                                scope.iconType = 'icon-folder-open';
-                            } else {
-                                scope.iconType = 'icon-folder-close';
-                            }
-
-                    } else {
-                        scope.iconType = 'icon-file';
-                    }
-
-                }
-
-                    scope.toggleChildren = function () {
-                        scope.toggleChildElement =  !scope.toggleChildElement;
-                        toggleFolderIcon();
-
-                    }
-
                     
 
-                    scope.hoverLine = false;
-
-                    scope.onDrop = function(event, ui) {
-
-                        var element = angular.element(event.target).scope().field;
-
-                        var newParentElementNo = element.elementNo;
-
-                        if (element.type === 'container') {
-
-                            var childElementNo = ui.draggable.scope().field.elementNo
-                            , index = scope.getIndex('Hierarchy', childElementNo)
-                            , currentParent = scope.record.Hierarchy[index].parent;
-
-                            if (currentParent !== newParentElementNo) {
-
-                                scope.record.Hierarchy[index].parent = newParentElementNo;
-                                scope.parsePath();
-
-                                scope.hoverLine = !scope.hoverLine;
-
-                                scope.$apply();
-
-                            }
-                        }
-                    }
-
-                    scope.onOver = function(event, ui) {
-
-                        var droppable = angular.element(event.target).scope().field
-                        , draggable = ui.draggable.scope().field
-                        , childElementNo = draggable.elementNo
-                        , index = scope.getIndex('Hierarchy', childElementNo)
-                        , currentParent = scope.record.Hierarchy[index].parent //TODO here!
-                        , newParentElementNo = droppable.elementNo;
-
-
-                        if (droppable.type === 'container' && currentParent !== newParentElementNo) {
-
-                                scope.hoverLine = !scope.hoverLine;
-
-                                scope.$apply();
-
-                            }
-                        }
-
-                    scope.onOut = function(event, ui) {
-
-                        var droppable = angular.element(event.target).scope().field
-                        , draggable = ui.draggable.scope().field
-                        , childElementNo = draggable.elementNo
-                        , index = scope.getIndex('Hierarchy', childElementNo)
-                        , currentParent = scope.record.Hierarchy[index].parent //TODO here!
-                        , newParentElementNo = droppable.elementNo;
-
-
-                        if (droppable.type === 'container' && currentParent !== newParentElementNo) {
-
-                                scope.hoverLine = !scope.hoverLine;
-
-                                scope.$apply();
-
-                            }
-                        }
-
-                    
-
-                    scope.toggleEditableElement = (scope.field.name !== '' ? true : false);
-
-                    scope.updateElement = function() {
-
-                        //check if this is container with children.
-                        //if so don't allow change from container
-
-                        scope.parsePath();
-
-                        scope.toggleEditableElement = !scope.toggleEditableElement;
-
-                    }
-
-                    scope.editElement = function() {
-
-                        // var index = scope.getIndex(scope.model, field.elementNo);
-
-                        scope.toggleEditableElement = !scope.toggleEditableElement;
-
-                    }
-
-                    scope.removeLine = function(model, elementNo) {
-
-                        var record = scope.record,
-                            index = -1,
-                            proceed;
-
-                        if (scope.field.content) { //its got children - do you want to delete them?
-                            proceed = false;
-
-                            scope.$emit('showErrorMessage', {title: 'You can\'t do that', body: 'The element you are trying to delete has children. Please remove them first.'});
-
-                        } else {
-                            proceed = true;
-                        }
-
-                        if (proceed) {
-
-                            index = scope.getIndex(model, elementNo)
-
-                            if (index !== -1) {
-                                scope.remove(model, index);
-                            };
-
-                        }
-
-                    }
-
-                    scope.addChild = function(ev, parent) {
-
-                        var arrayField = scope.add();
-
-                        arrayField.push({
-                            elementNo: scope.getNextElementNo(arrayField),
-                            parent: parent
-
-                        });
-                    }
+                   
                 }
             }
         }

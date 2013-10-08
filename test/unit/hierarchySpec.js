@@ -267,18 +267,18 @@ describe('fng-hierarchy directives', function() {
 
 		// 
 
-		it('should change the parent when dragging and dropping', function() {
+		iit('should change the parent when dragging and dropping', function() {
 
-			var els = elm.find('.hierarchy-list');
-			var kids = $(els[0]).find('fng-hierarchy-child');
+			// var els = elm.find('.hierarchy-list');
+			// var kids = $(els[0]).find('fng-hierarchy-child');
 
-			dump(scope);
+			// dump(scope);
 
-			spyOn(scope, 'onDrop');
+			spyOn(scope, 'add');
 
 			// var dropel = 
 
-			dump((scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')) || []).onDrop);
+			// dump((scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')) || []).onDrop);
 
 			// dump(scope.$eval(angular.element(els[1]).attr('jqyoui-droppable')));
 			// dump(angular.element(els[0]));
@@ -290,7 +290,8 @@ describe('fng-hierarchy directives', function() {
 
 			// ngDragDropService.invokeDrop(angular.element(els[2]),angular.element(els[0]),document.createEvent('Event'),{});
 
-			ngDragDropService.callEventCallback(scope, (scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')) || []).onDrop, document.createEvent('Event'), {}); 
+			// ngDragDropService.callEventCallback(scope, (scope.$eval(angular.element(els[0]).find('.ui-droppable').attr('jqyoui-droppable')) || []).onDrop, document.createEvent('Event'), {}); 
+			// ngDragDropService.callEventCallback(scope, 'onDrop', document.createEvent('Event'), {}); 
 
 			// ngDragDropService.invokeDrop(
 			//    $('<div data-drag="true" ng-model="list1" jqyoui-draggable="{index: 0, placeholder:true}">' + scope.list1[0].title + '</div>').data('$scope', scope),
