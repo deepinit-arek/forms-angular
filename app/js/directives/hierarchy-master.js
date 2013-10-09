@@ -7,7 +7,7 @@ formsAngular
 
 	// var getIndex = utils.getIndex;
 
-	$scope.onDrop = function (event, ui) {
+	$scope.onDrop = function (event, ui) {	
 
 		var childElementNo = ui.draggable.scope().field.elementNo;
 
@@ -133,7 +133,8 @@ formsAngular
 		var arrayField = $scope.add();
 
 		arrayField.push({
-			elementNo: $scope.getNextElementNo(arrayField)
+			elementNo: $scope.getNextElementNo(arrayField),
+			order: _.max($scope.hierarchy, function (el){return el.order}).order + 1
 		});
 	}
 
