@@ -1,7 +1,7 @@
 //acts as the master element to control all sub elements.
 formsAngular
 
-.controller('fngHierarchyListCtrl', function ($scope, $transclude, $compile, utils) {
+.controller('fngHierarchyListCtrl', function ($scope, utils) {
 
 	$scope.hoverLine = false;
 
