@@ -270,10 +270,7 @@ formsAngular
                         '<div ng-switch on="toggleEditableElement">' +
                         '<div ng-switch-when="true" ng-class= "{hoverindicator: hoverLine}" data-drop="true" jqyoui-droppable="{animate:true, onDrop: \'onDrop\', onOver: \'onOver\', onOut: \'onOut\'}"> ' +
                         '<span class="name"><i class="{{iconType}}" ng-click="toggleChildren()"></i>{{field.name}}</span>' +
-                        '<span class="label">' +
-                        '<span ng-if="field.label.length > 0">{{field.label}}</span>' +
-                        '<span ng-if="field.label == undefined">empty</span>' +
-                        '</span>' +
+
                         '<span class="controls">' +
                         '<span ng-if="field.type == \'container\'">' +
                         '<i class="icon-plus-sign" ng-click="addChild($event, field.elementNo)"></i>' +
