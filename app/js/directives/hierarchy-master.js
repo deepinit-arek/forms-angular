@@ -19,6 +19,8 @@ formsAngular
 
 		parsePath();
 
+		$scope.$apply();
+
 	}
 
 	$scope.onOver = function (event, ui) {
