@@ -5,13 +5,13 @@ formsAngular
 
 	$scope.hoverLine = false;
 
-	var getIndex = utils.getIndex;
+	// var getIndex = utils.getIndex;
 
 	$scope.onDrop = function (event, ui) {
 
 		var childElementNo = ui.draggable.scope().field.elementNo;
 
-		var index = getIndex($scope.record, 'Hierarchy', childElementNo);
+		var index = utils.getIndex($scope.record, $scope.model, childElementNo);
 
 		$scope.record.Hierarchy[index].parent = undefined;
 
@@ -41,8 +41,39 @@ formsAngular
 	
 	function parsePath() {
 
-		$scope.hier = utils.createFormSchema($scope.path);
+		$scope.hierarchy = utils.createFormSchema($scope.path);
+
+		
+
+
 	}
+
+	// this.updateOrder = function updateOrder () {
+
+
+	// 	function traverse(el) {
+	// 		var index;
+
+	// 		for (var i = el.length - 1; i >= 0; i--) {
+
+	// 			index = getIndex($scope.record, $scope.model, el[i].elementNo);
+
+	// 			$scope.record[$scope.model][index].order = el[i].order;
+
+	// 			if (el[i].content) {
+	// 				traverse(el[i].content);
+	// 			}
+
+	// 		};
+
+
+	// 	}
+
+	// 	traverse($scope.hierarchy);
+
+	// }
+
+
 
 
 	//TODO this is messsy - move out
@@ -121,16 +152,13 @@ formsAngular
 	    	}	
 	    } else {
 
+
+
 	    }
 	}
-
-	
-
-	
-
 })
 
-.directive('fngHierarchyList', function() {
+.directive('fngHierarchyList', function(utils) {
 
 	return {
 
@@ -171,6 +199,8 @@ formsAngular
 						}
 
 					fngHierarchyListCtrl.parsePath();
+
+					utils.updateOrder(scope);
 
 					fngHierarchyListCtrl.watchPath();
 
