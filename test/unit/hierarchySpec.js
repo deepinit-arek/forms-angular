@@ -232,6 +232,8 @@ describe('fng-hierarchy directives', function() {
 
 			inject(function($rootScope, $controller, $compile, _$httpBackend_, $templateCache, _$timeout_, _ngDragDropService_) {
 
+				// dump($attrs);
+
 				ngDragDropService = _ngDragDropService_;
 
 
@@ -269,10 +271,6 @@ describe('fng-hierarchy directives', function() {
 
 			});
 		});
-
-
-
-		// 
 
 		it('should change the parent when dragging and dropping', function() {
 

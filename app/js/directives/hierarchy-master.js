@@ -1,76 +1,23 @@
 //acts as the master element to control all sub elements.
 formsAngular
 
-.controller('fngHierarchyListCtrl', function ($scope, $element, $attrs, $transclude, $compile, utils) {
-
-
-	//add watch to ensure loading works correctly
-
-	var bootstrap = $scope.$watch('record', function (neww, oldd){
-
-		if (neww._id !== undefined) {
-
-			//quick and dirty. Assumes its always second level from record.
-			//e.g. record.Hierarchy TODO make generic.
-			var path = $attrs.record.split('.');
-
-				$scope.model = path[1];
-
-				if ($scope[path[0]] === undefined) {
-
-					$scope[path[0]] = {};
-					$scope.path = $scope[path[0]][path[1]] = [];
-				} else {
-					if ($scope[path[0]][path[1]] === undefined) {
-						$scope.path = $scope[path[0]][path[1]] = [];
-					} else {
-						$scope.path = $scope[path[0]][path[1]];
-					}
-				}
-
-			$scope.parsePath();
-
-			$scope.watchPath();
-
-			//done my job, remove the watch;
-			bootstrap();
-
-		}
-
-		
-
-	}, true);
+.controller('fngHierarchyListCtrl', function ($scope, $transclude, $compile, utils) {
 
 	$scope.hoverLine = false;
 
-	$scope.getIndex = function(model, elementNo) {
-
-
-
-	    var record = $scope.record,
-	        index = -1;
-
-	    for (var i = 0; i < record[model].length; i++) {
-	        if (record[model][i]['elementNo'] === elementNo) {
-	            return i;
-	        }
-	    }
-
-	    return i;
-
-	}
+	var getIndex = utils.getIndex;
 
 	$scope.onDrop = function (event, ui) {
 
 		var childElementNo = ui.draggable.scope().field.elementNo;
 
-		var index = $scope.getIndex('Hierarchy', childElementNo);
+		var index = getIndex($scope.record, 'Hierarchy', childElementNo);
 
 		$scope.record.Hierarchy[index].parent = undefined;
 
 		$scope.masterOnOut(event, ui);
 
-		$scope.parsePath();
+		parsePath();
 
 	}
 
@@ -90,18 +37,25 @@ formsAngular
 		
 	}
 	
-	$scope.parsePath = function () {
+	function parsePath() {
 
 		$scope.hier = utils.createFormSchema($scope.path);
 	}
 
-	$scope.watchPath = function() {
+
+	//TODO this is messsy - move out
+	this.parsePath = parsePath;
+	$scope.parsePath = parsePath;
+
+	this.watchPath = function() {
+
+
 
 		$scope.unwatchPath = $scope.$watch('path', function(neww, oldd) {
 
 			if (neww.length !== oldd.length) {
 
-				$scope.parsePath();
+				parsePath();
 
 			}
 
@@ -170,7 +124,7 @@ formsAngular
 
 	
 
-	$scope.schemaName = $attrs.schema;
+	
 
 })
 
@@ -186,6 +140,49 @@ formsAngular
 
 		replace: true,
 
-		controller: 'fngHierarchyListCtrl'
+		controller: 'fngHierarchyListCtrl',
+
+		link: function (scope, element, attrs, fngHierarchyListCtrl){
+
+			//add watch to ensure loading works correctly
+
+			var bootstrap = scope.$watch('record', function (neww, oldd){
+
+				if (neww._id !== undefined) {
+
+					//quick and dirty. Assumes its always second level from record.
+					//e.g. record.Hierarchy TODO make generic.
+					var path = attrs.record.split('.');
+
+						scope.model = path[1];
+
+						if (scope[path[0]] === undefined) {
+
+							scope[path[0]] = {};
+							scope.path = scope[path[0]][path[1]] = [];
+						} else {
+							if (scope[path[0]][path[1]] === undefined) {
+								scope.path = scope[path[0]][path[1]] = [];
+							} else {
+								scope.path = scope[path[0]][path[1]];
+							}
+						}
+
+					fngHierarchyListCtrl.parsePath();
+
+					fngHierarchyListCtrl.watchPath();
+
+					//done my job, remove the watch;
+					bootstrap();
+
+				}
+
+				
+
+			}, true);
+
+			scope.schemaName = attrs.schema;
+
+		}
 	};
 });

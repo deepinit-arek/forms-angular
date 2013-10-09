@@ -12,8 +12,24 @@ formsAngular
 
         controller: function ($scope, $element, $attrs, $transclude) {
 
+                function getIndex (model, elementNo) {
 
-            $scope.index = $scope.getIndex($scope.model, $scope.field.elementNo);
+                var record = $scope.record;
+
+                var index = -1;
+
+                for (var i = 0; i < record[model].length; i++) {
+                    if (record[model][i]['elementNo'] === elementNo) {
+                        return i;
+                    }
+                }
+
+                return i;
+
+            }
+
+
+            $scope.index = getIndex($scope.model, $scope.field.elementNo);
 
                 $scope.toggleChildElement = true;
 
@@ -56,7 +72,7 @@ formsAngular
                     if (element.type === 'container') {
 
                         var childElementNo = ui.draggable.scope().field.elementNo
-                        , index = $scope.getIndex('Hierarchy', childElementNo)
+                        , index = getIndex('Hierarchy', childElementNo)
                         , currentParent = $scope.record.Hierarchy[index].parent;
 
                         if (currentParent !== newParentElementNo) {
@@ -77,7 +93,7 @@ formsAngular
                     var droppable = angular.element(event.target).scope().field
                     , draggable = ui.draggable.scope().field
                     , childElementNo = draggable.elementNo
-                    , index = $scope.getIndex('Hierarchy', childElementNo)
+                    , index = getIndex('Hierarchy', childElementNo)
                     , currentParent = $scope.record.Hierarchy[index].parent //TODO here!
                     , newParentElementNo = droppable.elementNo;
 
@@ -96,7 +112,7 @@ formsAngular
                     var droppable = angular.element(event.target).scope().field
                     , draggable = ui.draggable.scope().field
                     , childElementNo = draggable.elementNo
-                    , index = $scope.getIndex('Hierarchy', childElementNo)
+                    , index = getIndex('Hierarchy', childElementNo)
                     , currentParent = $scope.record.Hierarchy[index].parent //TODO here!
                     , newParentElementNo = droppable.elementNo;
 
@@ -131,7 +147,7 @@ formsAngular
 
                 $scope.editElement = function() {
 
-                    // var index = $scope.getIndex($scope.model, field.elementNo);
+                    // var index = getIndex($scope.model, field.elementNo);
 
                     $scope.toggleEditableElement = !$scope.toggleEditableElement;
 
@@ -156,7 +172,7 @@ formsAngular
 
                     if (proceed) {
 
-                        index = $scope.getIndex(model, elementNo)
+                        index = getIndex(model, elementNo)
 
                         if (index !== -1) {
                             $scope.remove(model, index);
