@@ -14,7 +14,8 @@ describe('fng-hierarchy directives', function() {
 			"Hierarchy": [{
 				"elementNo": 0,
 				"name": "This is a new hierarchy",
-				"dataType": "container"
+				"dataType": "container",
+				"displayStatus": true
 			}, {
 				"elementNo": 15,
 				"parent": 0,
