@@ -168,23 +168,41 @@ formsAngular
 
             $scope.updateElement = function() {
 
-                $scope.field.name = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)].name;
-                $scope.field.label = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)].label;
-                $scope.field.type = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)].dataType;
+                var fieldInList = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)];
 
-                
-                $scope.toggleEditableElement = !$scope.toggleEditableElement;
+                if (fieldInList.label === undefined) {
 
-                //check if this is container with children.
-                //if so don't allow change from container
+                    $scope.$emit('showErrorMessage', {
+                        title: 'You can\'t do that',
+                        body: 'You need to give it a name!'
+                    });
 
-                if ($scope.field.content) {
+                } else {
 
-                }
 
-                // $scope.parsePath();
+                    fieldInList.name = fieldInList.label.replace(/ /g,"_");
+                    $scope.field.label = fieldInList.label;
+                    $scope.field.name = fieldInList.label.replace(/ /g,"_");
 
-                
+                    
+
+                    
+                    $scope.toggleEditableElement = !$scope.toggleEditableElement;
+
+                    //check if this is container with children.
+                    //if so don't allow change from container
+
+                    if (!($scope.field.content === undefined || $scope.field.content.length  < 1)) {
+
+                        $scope.field.type = fieldInList.dataType = "container";
+
+                        $scope.$emit('showErrorMessage', {
+                            title: 'You can\'t do that',
+                            body: 'The element you are trying to amend has children. It can only be a container.'
+                        });
+                    }
+
+                }             
 
             }
 
@@ -244,7 +262,7 @@ formsAngular
                         'jqyoui-draggable="{animate:true}" data-drag="true" data-jqyoui-options="{revert: true}">' +
                         '<div ng-switch on="toggleEditableElement">' +
                         '<div ng-switch-when="true" ng-class= "{hoverindicator: hoverLine}" data-drop="true" jqyoui-droppable="{animate:true, onDrop: \'onDrop\', onOver: \'onOver\', onOut: \'onOut\'}"> ' +
-                        '<span class="name"><i class="{{iconType}}" ng-click="toggleChildren()"></i>{{field.name}}</span>' +
+                        '<span class="name"><i class="{{iconType}}" ng-click="toggleChildren()"></i>{{field.label}}</span>' +
 
                     '<span class="controls">' +
                         '<span ng-if="field.type == \'container\'">' +
