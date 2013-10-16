@@ -49,10 +49,6 @@ formsAngular
 
             }
 
-            function reOrder(element, newPrevious) {
-
-            }
-
             $scope.hoverLine = false;
 
             $scope.onDrop = function(event, ui) {
@@ -172,6 +168,13 @@ formsAngular
 
             $scope.updateElement = function() {
 
+                $scope.field.name = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)].name;
+                $scope.field.label = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)].label;
+                $scope.field.type = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)].dataType;
+
+                
+                $scope.toggleEditableElement = !$scope.toggleEditableElement;
+
                 //check if this is container with children.
                 //if so don't allow change from container
 
@@ -179,9 +182,9 @@ formsAngular
 
                 }
 
-                $scope.parsePath();
+                // $scope.parsePath();
 
-                $scope.toggleEditableElement = !$scope.toggleEditableElement;
+                
 
             }
 
