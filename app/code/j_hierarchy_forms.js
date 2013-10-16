@@ -7,6 +7,7 @@ var HierarchyElement = new Schema({
     name: {type : String, required:true},  // merge field in doc.  unique within careplan structure
     label: {type : String},  // merge field in doc. unique within careplan structure
     order: {type: Number, form: {hidden: true}},
+    displayStatus: {type: Boolean, form: {hidden: true}},
     dataType: {type: String, enum:['text', 'textarea', 'container', 'array']}
 }, {_id: false});
 

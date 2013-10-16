@@ -14,7 +14,11 @@ formsAngular
 
             $scope.index = utils.getIndex($scope.record, $scope.model, $scope.field.elementNo);
 
-            $scope.toggleChildElement = true;
+            if ($scope.field.type === 'container') { 
+
+                $scope.toggleChildElement = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)]['displayStatus'];
+
+            }
 
             toggleFolderIcon();
 
@@ -36,6 +40,11 @@ formsAngular
 
             $scope.toggleChildren = function() {
                 $scope.toggleChildElement = !$scope.toggleChildElement;
+
+                //record the order for when initialising.
+
+                $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)]['displayStatus'] = $scope.toggleChildElement;
+
                 toggleFolderIcon();
 
             }
@@ -48,60 +57,46 @@ formsAngular
 
             $scope.onDrop = function(event, ui) {
 
-
-                var index
-                , currentParent
-                , newParentElementNo
-                , childElementNo
-                , dragged = ui.draggable.scope().field
-                , dropTarget = angular.element(event.target).scope().field
-                , newParentElementNo = dropTarget.elementNo
-                , childElementNo = dragged.elementNo
-                , childIndex = utils.getIndex($scope.record, $scope.model, childElementNo)
-                , currentParent = $scope.record[$scope.model][childIndex].parent
-                , dropTargetParent = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, newParentElementNo)].parent ;
-
-                
+                var index, currentParent, newParentElementNo, childElementNo, dragged = ui.draggable.scope().field,
+                    dropTarget = angular.element(event.target).scope().field,
+                    newParentElementNo = dropTarget.elementNo,
+                    childElementNo = dragged.elementNo,
+                    childIndex = utils.getIndex($scope.record, $scope.model, childElementNo),
+                    currentParent = $scope.record[$scope.model][childIndex].parent,
+                    dropTargetParent = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, newParentElementNo)].parent;
 
                 //if dropping onto a container, and the target is open, then move the element.
                 if (dropTarget.type === 'container' && angular.element(event.target).scope().toggleChildElement === true) {
 
-
                     if (currentParent !== newParentElementNo) {
 
                         $scope.record[$scope.model][childIndex].parent = newParentElementNo;
-                        
-
 
                     } else {
 
                         //re-number the higher elements
 
-                    dragged.order = dropTarget.order + 1;
+                        dragged.order = dropTarget.order + 1;
 
-                    var reOrderStartIndex;
+                        var reOrderStartIndex;
 
-                    for (var i = 0 ;i < dropTarget.parentReference.length; i++) {
-                        if (dropTarget.parentReference[i].elementNo === dropTarget.elementNo) {//move
-                             reOrderStartIndex = i + 1;
-                            break;
+                        for (var i = 0; i < dropTarget.parentReference.length; i++) {
+                            if (dropTarget.parentReference[i].elementNo === dropTarget.elementNo) { //move
+                                reOrderStartIndex = i + 1;
+                                break;
+                            }
                         }
-                    } 
 
-                    for (var i = reOrderStartIndex ;i < dropTarget.parentReference.length; i++) {
-                     
-                        dropTarget.parentReference[i].order = dropTarget.parentReference[i].order + 1;
+                        for (var i = reOrderStartIndex; i < dropTarget.parentReference.length; i++) {
 
-                    } 
+                            dropTarget.parentReference[i].order = dropTarget.parentReference[i].order + 1;
 
-                    utils.updateOrder($scope);
+                        }
 
-                        
-
+                        utils.updateOrder($scope);
                     }
-                } else if (currentParent === dropTargetParent){ 
 
-                   
+                } else if (currentParent === dropTargetParent) {
 
                     //re-number the higher elements
 
@@ -109,24 +104,19 @@ formsAngular
 
                     var reOrderStartIndex;
 
-                    for (var i = 0 ;i < dropTarget.parentReference.length; i++) {
-                        if (dropTarget.parentReference[i].elementNo === dropTarget.elementNo) {//move
-                             reOrderStartIndex = i + 1;
+                    for (var i = 0; i < dropTarget.parentReference.length; i++) {
+                        if (dropTarget.parentReference[i].elementNo === dropTarget.elementNo) { //move
+                            reOrderStartIndex = i + 1;
                             break;
                         }
-                    } 
+                    }
 
-                    for (var i = reOrderStartIndex ;i < dropTarget.parentReference.length; i++) {
-                     
+                    for (var i = reOrderStartIndex; i < dropTarget.parentReference.length; i++) {
+
                         dropTarget.parentReference[i].order = dropTarget.parentReference[i].order + 1;
 
-                    } 
-
+                    }
                     utils.updateOrder($scope);
-
-
-
-
                 }
 
                 $scope.parsePath();
@@ -134,6 +124,7 @@ formsAngular
                 $scope.hoverLine = !$scope.hoverLine;
 
                 $scope.$apply();
+
             }
 
 
@@ -147,24 +138,18 @@ formsAngular
                     ,
                     newParentElementNo = droppable.elementNo;
 
-                    //if same level (same parent, then move it
+                //if same level (same parent, then move it
 
-                    if (droppable.type !== 'container'){
+                if (droppable.type !== 'container') {
 
-                    }
+                }
 
+                $scope.hoverLine = !$scope.hoverLine;
 
-                // if (droppable.type === 'container' && currentParent !== newParentElementNo) {
-
-                    $scope.hoverLine = !$scope.hoverLine;
-
-                    $scope.$apply();
-
-                // }
-
-
+                $scope.$apply();
 
             }
+
 
             $scope.onOut = function(event, ui) {
 
@@ -176,14 +161,9 @@ formsAngular
                     ,
                     newParentElementNo = droppable.elementNo;
 
-
-                // if (droppable.type === 'container' && currentParent !== newParentElementNo) {
-
                 $scope.hoverLine = !$scope.hoverLine;
 
                 $scope.$apply();
-
-                // }
             }
 
 
@@ -207,11 +187,7 @@ formsAngular
 
             $scope.editElement = function() {
 
-                // var index = utils.getIndex($scope.record, $scope.model, field.elementNo);
-
                 $scope.toggleEditableElement = !$scope.toggleEditableElement;
-
-
 
             }
 
@@ -240,9 +216,7 @@ formsAngular
                     if (index !== -1) {
                         $scope.remove(model, index);
                     };
-
                 }
-
             }
 
             $scope.addChild = function(ev, parent) {
@@ -255,8 +229,6 @@ formsAngular
 
                 });
             }
-
-
         },
 
         compile: function(tElement, tAttrs, transclude) {
@@ -271,7 +243,7 @@ formsAngular
                         '<div ng-switch-when="true" ng-class= "{hoverindicator: hoverLine}" data-drop="true" jqyoui-droppable="{animate:true, onDrop: \'onDrop\', onOver: \'onOver\', onOut: \'onOut\'}"> ' +
                         '<span class="name"><i class="{{iconType}}" ng-click="toggleChildren()"></i>{{field.name}}</span>' +
 
-                        '<span class="controls">' +
+                    '<span class="controls">' +
                         '<span ng-if="field.type == \'container\'">' +
                         '<i class="icon-plus-sign" ng-click="addChild($event, field.elementNo)"></i>' +
                         '</span>' +

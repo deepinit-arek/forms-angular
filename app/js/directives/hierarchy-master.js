@@ -34,55 +34,18 @@ formsAngular
 
 		$scope.hoverLine = !$scope.hoverLine;
 		$scope.$apply();
-
-
 		
 	}
 	
 	function parsePath() {
-
 		$scope.hierarchy = utils.createFormSchema($scope.path);
-
-		
-
-
 	}
-
-	// this.updateOrder = function updateOrder () {
-
-
-	// 	function traverse(el) {
-	// 		var index;
-
-	// 		for (var i = el.length - 1; i >= 0; i--) {
-
-	// 			index = getIndex($scope.record, $scope.model, el[i].elementNo);
-
-	// 			$scope.record[$scope.model][index].order = el[i].order;
-
-	// 			if (el[i].content) {
-	// 				traverse(el[i].content);
-	// 			}
-
-	// 		};
-
-
-	// 	}
-
-	// 	traverse($scope.hierarchy);
-
-	// }
-
-
-
 
 	//TODO this is messsy - move out
 	this.parsePath = parsePath;
 	$scope.parsePath = parsePath;
 
 	this.watchPath = function() {
-
-
 
 		$scope.unwatchPath = $scope.$watch('path', function(neww, oldd) {
 
@@ -151,10 +114,6 @@ formsAngular
 	    	    $scope.$apply();
 
 	    	}	
-	    } else {
-
-
-
 	    }
 	}
 })
