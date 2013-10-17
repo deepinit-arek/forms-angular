@@ -1,16 +1,8 @@
-formsAngular
 
-.directive('fngHierarchyChild', function($compile, ngDragDropService, $timeout, utils) {
 
-    return {
+    formsAngular
 
-        restrict: 'E',
-
-        replace: true,
-
-        require: '^fngHierarchyList',
-
-        controller: function($scope) {
+.controller('fngHierarchyChildCtrl', function ($scope, utils) {
 
             $scope.index = utils.getIndex($scope.record, $scope.model, $scope.field.elementNo);
 
@@ -192,7 +184,7 @@ formsAngular
                     //check if this is container with children.
                     //if so don't allow change from container
 
-                    if (!($scope.field.content === undefined || $scope.field.content.length  < 1)) {
+                    if (!($scope.field.content === undefined || $scope.field.content.length  < 1) && fieldInList.dataType !== "container") {
 
                         $scope.field.type = fieldInList.dataType = "container";
 
@@ -250,7 +242,19 @@ formsAngular
 
                 });
             }
-        },
+        });
+
+    formsAngular
+
+.directive('fngHierarchyChild', function($compile, ngDragDropService, $timeout, utils) {
+
+    return {
+
+        restrict: 'E',
+
+        replace: true,
+
+        controller: 'fngHierarchyChildCtrl',
 
         compile: function(tElement, tAttrs, transclude) {
 
