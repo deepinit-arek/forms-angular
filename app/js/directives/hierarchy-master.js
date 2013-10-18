@@ -5,9 +5,7 @@ formsAngular
 
 	$scope.hoverLine = false;
 
-	// var getIndex = utils.getIndex;
-
-	$scope.onDrop = function (event, ui) {	
+	$scope.onDrop = function (event, ui) {
 
 		var childElementNo = ui.draggable.scope().field.elementNo;
 
@@ -15,13 +13,14 @@ formsAngular
 
 		$scope.record.Hierarchy[index].parent = undefined;
 
-		$scope.masterOnOut(event, ui);
+		$scope.onOver(event, ui);
 
-		parsePath();
+		$scope.parsePath();
 
 		$scope.$apply();
 
 	}
+
 
 	$scope.onOver = function (event, ui) {
 
@@ -30,20 +29,10 @@ formsAngular
 		
 	}
 
-	$scope.masterOnOut = function (event, ui) {
+	$scope.parsePath = function () {
 
-		$scope.hoverLine = !$scope.hoverLine;
-		$scope.$apply();
-		
-	}
-	
-	function parsePath() {
 		$scope.hierarchy = utils.createFormSchema($scope.path);
 	}
-
-	//TODO this is messsy - move out
-	this.parsePath = parsePath;
-	$scope.parsePath = parsePath;
 
 	this.watchPath = function() {
 
@@ -51,13 +40,23 @@ formsAngular
 
 			if (neww.length !== oldd.length) {
 
-				parsePath();
+				$scope.parsePath();
 
 			}
 
 		}, true);
 
 	}
+
+	$scope.addChild = function() {
+
+                var arrayField = $scope.add();
+
+                arrayField.push({
+                        elementNo: $scope.getNextElementNo(arrayField),
+                        order: _.max($scope.hierarchy, function (el){return el.order}).order + 1
+                });
+        }
 
 	$scope.add = function() {
 
@@ -77,7 +76,7 @@ formsAngular
 
 	}
 
-	$scope.getNextElementNo = function(arrayField) {
+	$scope.getNextElementNo = function(arrayField) { 
 
 		var elementArray = [];
 
@@ -89,32 +88,6 @@ formsAngular
 
 		return elementArray[elementArray.length - 1] + 1;
 
-	}
-
-	$scope.addChild = function() {
-
-		var arrayField = $scope.add();
-
-		arrayField.push({
-			elementNo: $scope.getNextElementNo(arrayField),
-			order: _.max($scope.hierarchy, function (el){return el.order}).order + 1
-		});
-	}
-
-	$scope.onOut = function(event, ui) {
-
-	    var element = angular.element(event.target).scope().field;
-
-	    if (element !== undefined) {
-
-	    	if (element.type === 'container') {
-
-	    	    $scope.hoverLine = !$scope.hoverLine;
-
-	    	    $scope.$apply();
-
-	    	}	
-	    }
 	}
 })
 
@@ -158,7 +131,7 @@ formsAngular
 							}
 						}
 
-					fngHierarchyListCtrl.parsePath();
+					scope.parsePath();
 
 					utils.updateOrder(scope);
 
