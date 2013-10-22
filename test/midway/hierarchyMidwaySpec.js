@@ -1,6 +1,6 @@
 describe('fng-hierarchy', function() {
 
-	var ctrl, elm, scope, $httpBackend, ngDragDropService, $timeout, recordData, formSchema, schemaHierarchy, hierarchy;
+	var ctrl, elm, scope, $httpBackend, ngDragDropService, $timeout, recordData, formSchema, schemaHierarchy, hierarchy, $compile, $templateCache, template;
 
 	beforeEach(function() {
 
@@ -63,44 +63,13 @@ describe('fng-hierarchy', function() {
 				}]
 			}
 
-			formSchema = [{
-				"name": "Name",
-				"id": "f_Name",
-				"label": " Name",
-				"type": "text",
-				"required": true,
-				"add": "autofocus "
-			}, {
-				"hierarchy": true,
-				"name": "Hierarchy",
-				"id": "f_Hierarchy",
-				"label": " Hierarchy",
-				"schema": [{
-					"name": "Hierarchy.name",
-					"id": "f_Hierarchy.name",
-					"label": "Name",
-					"type": "text",
-					"required": true
-				}, {
-					"name": "Hierarchy.label",
-					"id": "f_Hierarchy.label",
-					"label": "Label",
-					"type": "text"
-				}, {
-					"name": "Hierarchy.dataType",
-					"id": "f_Hierarchy.dataType",
-					"label": "Data Type",
-					"type": "select",
-					"options": "f_Hierarchy_dataTypeOptions"
-				}]
-			}];
-
 			schemaHierarchy = [{
 				"name": "Hierarchy.name",
 				"id": "f_Hierarchy.name",
 				"label": "Name",
 				"type": "text",
-				"required": true
+				"required": true,
+				"form": {"hidden": "true"}
 			}, {
 				"name": "Hierarchy.label",
 				"id": "f_Hierarchy.label",
@@ -124,7 +93,7 @@ describe('fng-hierarchy', function() {
 	describe('Integration tests', function() {
 
 		beforeEach(function() {
-			inject(function($rootScope, $controller, $compile, _$httpBackend_, $templateCache) {
+			inject(function($rootScope, $controller, _$compile_, _$httpBackend_, _$templateCache_) {
 
 				$httpBackend = _$httpBackend_;
 				scope = $rootScope;
@@ -133,14 +102,18 @@ describe('fng-hierarchy', function() {
 					scope.record.Hierarchy.pop();
 				}
 
+				$compile = _$compile_;
+				$templateCache = _$templateCache_;
+
+
 				scope.record = recordData;
 
-				scope.formSchema = formSchema;
+				// scope.formSchema = formSchema;
 
 				scope.__schema_Hierarchy = schemaHierarchy;
 
 				$httpBackend.whenGET('/template/hierarchy-master.html').respond($templateCache.get('app/template/hierarchy-master.html'));
-				var template = '<fng-hierarchy-list data-record="record.Hierarchy" data-schema="__schema_Hierarchy"></fng-hierarchy-list>';
+				template = '<fng-hierarchy-list data-record="record.Hierarchy" data-schema="__schema_Hierarchy"></fng-hierarchy-list>';
 				elm = angular.element(template);
 				$compile(elm)(scope);
 				scope.$digest();
@@ -239,6 +212,42 @@ describe('fng-hierarchy', function() {
 					title: 'You can\'t do that',
 					body: 'The element you are trying to delete has children. Please remove them first.'
 				});
+			});
+
+			it('display the correct icon if a new container is added', function() {
+
+				var plusIcon = elm.find('.icon-plus-sign');
+
+				expect(elm.find('.icon-folder-close').length).toEqual(0);
+
+				$(plusIcon[plusIcon.length - 1]).click();
+
+				scope.record.Hierarchy[8].name = 'TestingLabel';
+				scope.record.Hierarchy[8].dataType = 'container';
+
+				elm.find('button').click();
+				elm = angular.element(template);
+				$compile(elm)(scope);
+				scope.$digest();
+				expect(elm.find('.icon-folder-close').length).toEqual(1);
+
+
+			});
+
+			it('removes the edit form if done is clicked and nothing has been entered', function() {
+
+				var plusIcon = elm.find('.icon-plus-sign');
+
+				expect(elm.find('input').length).toEqual(0);
+
+				$(plusIcon[plusIcon.length - 1]).click();
+
+				expect(elm.find('input').length).toEqual(2);
+
+				elm.find('button').click();
+
+				expect(elm.find('input').length).toEqual(0);
+
 			});
 
 		});

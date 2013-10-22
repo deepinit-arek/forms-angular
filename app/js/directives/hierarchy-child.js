@@ -30,6 +30,9 @@ formsAngular
 
     }
 
+
+    $scope.toggleFolderIcon = toggleFolderIcon;
+
     $scope.toggleChildren = function() {
 
         $scope.toggleChildElement = !$scope.toggleChildElement;
@@ -162,11 +165,21 @@ formsAngular
 
     $scope.toggleEditableElement = ($scope.field.name !== '' ? true : false);
 
+    function cancel() {
+
+    }
+
 
     //TODO Refactor
     $scope.updateElement = function() {
 
         var fieldInList = $scope.record[$scope.model][utils.getIndex($scope.record, $scope.model, $scope.field.elementNo)];
+
+        //cancel if nothing has changed
+
+        if (fieldInList.label === undefined && (fieldInList.dataType === undefined || fieldInList.dataType === "")) {
+            return $scope.removeLine($scope.model, fieldInList.elementNo);
+        }
 
         if (fieldInList.label === undefined) {
 
@@ -197,9 +210,6 @@ formsAngular
                     body: 'The element you are trying to amend has children. It can only be a container.'
                 });
             }
-
-
-
         }
 
     }
@@ -305,6 +315,18 @@ formsAngular
                         var $template = angular.element(template);
                         $compile($template)(scope);
                         element.append($template);
+
+                        scope.$watch('toggleEditableElement', function(newValue, oldValue, scope) {
+
+                            if (newValue !== oldValue) {
+
+                                scope.toggleFolderIcon();
+
+                            }
+
+                            
+                            
+                        });
                     }
                 }
             }
