@@ -30,12 +30,19 @@ formsAngular
 
     }
 
-
     $scope.toggleFolderIcon = toggleFolderIcon;
 
-    $scope.toggleChildren = function() {
+    $scope.toggleChildren = function(value) {
 
-        $scope.toggleChildElement = !$scope.toggleChildElement;
+        if (value) {
+
+            $scope.toggleChildElement = value;
+
+        } else {
+
+            $scope.toggleChildElement = !$scope.toggleChildElement;
+
+        }
 
         //record the order for when initialising.
 
@@ -44,8 +51,6 @@ formsAngular
         toggleFolderIcon();
 
     }
-
-
 
     $scope.onDrop = function(event, ui) {
 
@@ -257,6 +262,8 @@ formsAngular
             parent: parent
 
         });
+
+        $scope.toggleChildren(true);
     }
 })
     .directive('fngHierarchyChild', function($compile, ngDragDropService, $timeout, utils) {
