@@ -1,11 +1,11 @@
 //acts as the master element to control all sub elements.
 formsAngular
 
-.controller('fngHierarchyListCtrl', function ($scope, utils) {
+.controller('fngHierarchyListCtrl', function($scope, utils) {
 
 	$scope.hoverLine = false;
 
-	$scope.onDrop = function (event, ui) {
+	$scope.onDrop = function(event, ui) {
 
 		var childElementNo = ui.draggable.scope().field.elementNo;
 
@@ -22,14 +22,14 @@ formsAngular
 	}
 
 
-	$scope.onOver = function (event, ui) {
+	$scope.onOver = function(event, ui) {
 
 		$scope.hoverLine = !$scope.hoverLine;
 		$scope.$apply();
-		
+
 	}
 
-	$scope.parsePath = function () {
+	$scope.parsePath = function() {
 
 		$scope.hierarchy = utils.createFormSchema($scope.path);
 	}
@@ -50,13 +50,36 @@ formsAngular
 
 	$scope.addChild = function() {
 
-                var arrayField = $scope.add();
+		if ($scope.model !== undefined) {
 
-                arrayField.push({
-                        elementNo: $scope.getNextElementNo(arrayField),
-                        order: _.max($scope.hierarchy, function (el){return el.order}).order + 1
-                });
-        }
+			var arrayField = $scope.add(),
+				elementNo, order;
+
+			// if (arrayField)
+
+			elementNo = isNaN($scope.getNextElementNo(arrayField)) ? 0 : $scope.getNextElementNo(arrayField);
+			order = isNaN(_.max($scope.hierarchy, function(el) {
+				return el.order
+			}).order + 1) ? 0 : _.max($scope.hierarchy, function(el) {
+				return el.order
+			}).order + 1;
+
+			arrayField.push({
+				elementNo: elementNo,
+				order: order
+			});
+
+		} else {
+
+			$scope.$emit('showErrorMessage', {
+			    title: 'You can\'t do that',
+			    body: 'You need to provide a name and then save it before adding any elements.'
+			});
+
+		}
+
+		
+	}
 
 	$scope.add = function() {
 
@@ -76,7 +99,7 @@ formsAngular
 
 	}
 
-	$scope.getNextElementNo = function(arrayField) { 
+	$scope.getNextElementNo = function(arrayField) {
 
 		var elementArray = [];
 
@@ -84,7 +107,9 @@ formsAngular
 			elementArray.push(arrayField[i].elementNo);
 		};
 
-		elementArray.sort(function compareNumbers(a, b) {  return a - b;});
+		elementArray.sort(function compareNumbers(a, b) {
+			return a - b;
+		});
 
 		return elementArray[elementArray.length - 1] + 1;
 
@@ -105,11 +130,11 @@ formsAngular
 
 		controller: 'fngHierarchyListCtrl',
 
-		link: function (scope, element, attrs, fngHierarchyListCtrl){
+		link: function(scope, element, attrs, fngHierarchyListCtrl) {
 
 			//add watch to ensure loading works correctly
 
-			var bootstrap = scope.$watch('record', function (neww, oldd){
+			var bootstrap = scope.$watch('record', function(neww, oldd) {
 
 				if (neww._id !== undefined) {
 
@@ -117,19 +142,19 @@ formsAngular
 					//e.g. record.Hierarchy TODO make generic.
 					var path = attrs.record.split('.');
 
-						scope.model = path[1];
+					scope.model = path[1];
 
-						if (scope[path[0]] === undefined) {
+					if (scope[path[0]] === undefined) {
 
-							scope[path[0]] = {};
+						scope[path[0]] = {};
+						scope.path = scope[path[0]][path[1]] = [];
+					} else {
+						if (scope[path[0]][path[1]] === undefined) {
 							scope.path = scope[path[0]][path[1]] = [];
 						} else {
-							if (scope[path[0]][path[1]] === undefined) {
-								scope.path = scope[path[0]][path[1]] = [];
-							} else {
-								scope.path = scope[path[0]][path[1]];
-							}
+							scope.path = scope[path[0]][path[1]];
 						}
+					}
 
 					scope.parsePath();
 
@@ -142,7 +167,7 @@ formsAngular
 
 				}
 
-				
+
 
 			}, true);
 
