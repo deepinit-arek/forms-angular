@@ -271,7 +271,7 @@ describe('fng-hierarchy', function() {
 
 				});
 
-				iit('should $emit an error if trying to add an element before saving the name in the form', function() {
+				it('should $emit an error if trying to add an element before saving the name in the form', function() {
 
 					spyOn(scope, "$emit");
 					expect(elm.find('input').length).toBe(0);
@@ -286,7 +286,7 @@ describe('fng-hierarchy', function() {
 	});
 });
 
-xdescribe('formsAngular hierarchy tests', function() {
+describe('formsAngular hierarchy tests', function() {
 
 	var $httpBackend, $rootScope, $controller, $location, $compile, elm, template;
 
@@ -519,13 +519,5 @@ xdescribe('formsAngular hierarchy tests', function() {
 			expect(elm.find('.icon-plus-sign').length).toEqual(1);
 		});
 	});
-
-	describe('load an existing hierarchy', function() {
-
-		it('should load the new hierarchy screen', function() {
-
-		});
-	});
-
 
 });
