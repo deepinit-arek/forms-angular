@@ -9,7 +9,6 @@ describe('fng-hierarchy', function() {
 		angular.mock.module('formsAngular');
 		angular.mock.module('app/template/hierarchy-master.html');
 		inject(function(_utils_) {
-		// module('ngDragDrop');
 		recordData = {
 			"Name": "test2",
 			"_id": "524e73ae7d7f3c9047000005",
@@ -63,26 +62,6 @@ describe('fng-hierarchy', function() {
 			}]
 		}
 
-
-		// recordData = {
-		// 	"Name": "test2",
-		// 	"_id": "524e73ae7d7f3c9047000005",
-		// 	"Hierarchy": [{
-		// 		"elementNo": 0,
-		// 		"name": "This is a new hierarchy",
-		// 		"dataType": "container",
-		// 		"displayStatus": true,
-		// 		"parent": null
-		// 	}, {
-		// 		"elementNo": 15,
-		// 		"parent": 0,
-		// 		"name": "lower",
-		// 		"dataType": "text"
-		// 	}, {
-		// 		"elementNo": 4,
-		// 		"name": "secon"
-		// 	}]
-		// };
 		formSchema = [{
 			"name": "Name",
 			"id": "f_Name",
@@ -136,70 +115,6 @@ describe('fng-hierarchy', function() {
 
 		hierarchy = _utils_.createFormSchema(recordData.Hierarchy);
 
-	// 	hierarchy = [{
-	// 		name: 'This is a new hierarchy',
-	// 		id: 'f_0',
-	// 		label: 'This Is A New Hierarchy',
-	// 		type: 'container',
-	// 		elementNo: 0,
-	// 		content: [
-	// 			[{
-	// 				name: 'lower',
-	// 				id: 'f_15',
-	// 				label: 'Lower',
-	// 				type: 'text',
-	// 				elementNo: 15,
-	// 				'$$hashKey': '09S',
-	// 				parentReference: [{
-	// 					name: 'This is a new hierarchy',
-	// 					id: 'f_0',
-	// 					label: 'This Is A New Hierarchy',
-	// 					type: 'container',
-	// 					elementNo: 0,
-	// 					content: [
-	// 						[{
-	// 							name: 'lower',
-	// 							id: 'f_15',
-	// 							label: 'Lower',
-	// 							type: 'text',
-	// 							elementNo: 15,
-	// 							'$$hashKey': '09S'
-	// 						}]
-	// 					],
-	// 					'$$hashKey': '09G'
-	// 				}, {
-	// 					name: 'secon',
-	// 					id: 'f_4',
-	// 					label: 'Secon',
-	// 					type: 'text',
-	// 					elementNo: 4,
-	// 					'$$hashKey': '09H'
-	// 				}, {
-	// 					name: '',
-	// 					id: 'f_16',
-	// 					label: '',
-	// 					type: 'text',
-	// 					elementNo: 16,
-	// 					'$$hashKey': '09I'
-	// 				}]
-	// 			}]
-	// 		],
-	// 		'$$hashKey': '09G'
-	// 	}, {
-	// 		name: 'secon',
-	// 		id: 'f_4',
-	// 		label: 'Secon',
-	// 		type: 'text',
-	// 		elementNo: 4,
-	// 		'$$hashKey': '09H'
-	// 	}, {
-	// 		name: '',
-	// 		id: 'f_16',
-	// 		label: '',
-	// 		type: 'text',
-	// 		elementNo: 16,
-	// 		'$$hashKey': '09I'
-	// 	}]
 	});
 
 });
@@ -537,21 +452,9 @@ describe('fng-hierarchy', function() {
 		beforeEach(function() {
 			inject(function($rootScope, $compile, $controller) {
 
-				// $httpBackend = _$httpBackend_;
-
 				scope = $rootScope;
 
 				scope.record = recordData;
-
-
-
-				// scope.formSchema = formSchema;
-
-				// scope.__schema_Hierarchy = schemaHierarchy;
-
-				// scope.path = recordData.Hierarchy;
-
-				// // scope.hierarchy = hierarchy;
 
 				scope.field = hierarchy[0];
 
@@ -563,20 +466,9 @@ describe('fng-hierarchy', function() {
 					scope.record.Hierarchy.pop();
 				};
 
-				// scope.removeLine = function (model, elementNo) {
-
-				// };
-
-				// utilsService = utils;
-
-				// $httpBackend.whenGET('/template/hierarchy-master.html').respond($templateCache.get('app/template/hierarchy-master.html'));
 				elm = angular.element('<span ng-switch on="true"><span ng-switch-when="true"><fng-hierarchy-child ng-repeat="field in hierarchy"></fng-hierarchy-child></span></span>');
 				$compile(elm)(scope);
 				scope.$digest();
-
-				// ctrl = $controller("fngHierarchyChildCtrl", {
-				// 	$scope: scope
-				// });
 			});
 		});
 
@@ -592,96 +484,6 @@ describe('fng-hierarchy', function() {
 
 		});
 
-
-		//DONT WORK-----------------------------------------------------------------
-		xdescribe('actions', function() {
-
-			//TODO - won't work because function references function in baseCtrl.
-
-			xit('should call removeLine when minus is clicked', function() {
-
-				// spyOn(scope, 'removeLine').andReturn();
-
-				var el = elm.find('i.icon-minus-sign');
-				dump(el.length);
-
-				$(el[0]).click();
-				scope.$digest();
-
-				dump(el.length);
-
-				expect(el.length).toBe(3);
-				expect(el.length).toBe(2);
-
-
-
-				// expect(scope.removeLine).toHaveBeenCalled();
-
-
-			});
-
-			iit('should add a new entry form when clicking add', function() {
-
-				var el = elm.find('input');
-				expect(el.length).toBe(0);
-				var add = elm.find('.icon-plus-sign');
-				$(add[1]).click();
-				el = elm.find('input');
-				expect(el.length).toBe(2);
-
-			});
-
-			xit('should return the correct elementNo when adding a new element', function() {
-
-				var el = elm.find('input');
-				expect(el.length).toBe(0);
-				var add = elm.find('.icon-plus-sign');
-				//second element in declaration above has highest elementNo.
-				var highestElementNo = 15;
-				$(add[add.length - 1]).click();
-				expect(scope.record.Hierarchy[scope.record.Hierarchy.length - 1].elementNo).toBe(highestElementNo + 1);
-			});
-
-			it('should not remove a hierarchy element if it has children', function() {
-
-				var el = elm.find('i.icon-minus-sign');
-
-
-				expect(el.length).toBe(3);
-				$(el[0]).click();
-				el = elm.find('i.icon-minus-sign');
-				expect(el.length).toBe(3);
-
-			});
-
-			it('should display a form when clicking edit', function() {
-
-				var el = elm.find('input');
-				expect(el.length).toBe(0);
-				var edit = elm.find('.icon-edit');
-				$(edit[0]).click();
-				el = elm.find('input');
-				expect(el.length).toBe(2);
-
-			});
-
-
-			it('should emit showErrorMessage event if you try to delete a container with children', function() {
-
-
-				spyOn(scope, "$emit");
-
-				var remove = elm.find('.icon-minus-sign');
-
-				$(remove[0]).click();
-
-				expect(scope.$emit).toHaveBeenCalledWith('showErrorMessage', {
-					title: 'You can\'t do that',
-					body: 'The element you are trying to delete has children. Please remove them first.'
-				});
-			});
-		});
-		//DONT WORK-----------------------------------------------------------------
 	});
 
 	describe('fngHierarchyChildCtrl Controller', function() {
@@ -690,8 +492,6 @@ describe('fng-hierarchy', function() {
 
 		beforeEach(function() {
 			inject(function($rootScope, $controller) {
-
-				// $httpBackend = _$httpBackend_;
 
 				scope = $rootScope;
 
@@ -741,14 +541,9 @@ describe('fng-hierarchy', function() {
 		//TODO use ng-class for toggleFolderIcon()
 		xdescribe('toggleFolderIcon behaviour', function() {
 
-			// dump(formsAngular.controller('fngHierarchyChildCtrl'));
-
 			spyOn(scope.prototype, 'toggleFolderIcon').andCallThrough();
 
 			it('variables should be defined', function() {
-
-
-
 			});
 
 		});
@@ -772,15 +567,15 @@ describe('fng-hierarchy', function() {
 
 		});
 
+		//These are causing an error:
+		//TypeError: 'undefined' is not a function (evaluating 'injector.get('$rootElement').off()')
+		//no idea what this is or how to fix it.
+
 		xdescribe('onDrop behaviour', function() {
 
 			var event, ui, childElementNo;
 
 			beforeEach(function() {
-
-				//mock angular.element
-
-				// dump(angular.element);
 
 				var ngElementFake = function(el) {
 					return {
@@ -794,6 +589,7 @@ describe('fng-hierarchy', function() {
 				}
 
 				event = document.createEvent('Event');
+				event.target = {};
 
 				ui = {
 					draggable: {
@@ -807,23 +603,17 @@ describe('fng-hierarchy', function() {
 					}
 				};
 
-				// childElementNo = ui.draggable.scope().field.elementNo;
-
 				scope.parsePath = function () {
 
 				}
 
 				spyOn(angular, 'element').andCallFake(ngElementFake);
-				// spyOn(scope, 'onDrop').andCallThrough();
-				// spyOn(scope, 'onOver').andCallThrough();
-				// spyOn(utils, 'getIndex').andCallThrough();
-				// spyOn(scope, '$apply').andCallThrough();
+				// spyOn(angular, 'element').andCallThrough();
 			});
 
-			iit('onDrop should have been called', function() {
-				// scope.$digest();
+			it('onDrop should have been called', function() {
+
 				scope.onDrop(event, ui);
-				// expect(scope.onDrop).toHaveBeenCalledWith(event, ui);
 			});
 			it('onDrop should call OnOver', function() {
 				scope.onDrop(event, ui);
