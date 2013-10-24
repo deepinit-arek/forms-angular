@@ -291,7 +291,7 @@ formsAngular
                             // '<span class="name"><i ng-class="{\'icon-file\': field.type !==\'container\' && (\'icon-folder-close\': !toggleChildElement, \'icon-folder-open\': toggleChildElement)}" ng-click="toggleChildren()"></i>{{field.label}}</span>' +
                             '<span class="name"><i class="{{iconType}}" ng-click="toggleChildren()"></i>{{field.label}}</span>' +
 
-                        '<span class="controls">' +
+                        '<span class="hierarchy-controls">' +
                             '<span ng-if="field.type == \'container\'">' +
                             '<i class="icon-plus-sign" ng-click="addChild($event, field.elementNo)"></i>' +
                             '</span>' +
@@ -304,8 +304,10 @@ formsAngular
                             '</span>' +
                             '</div>' +
                             '<div ng-switch-when="false">' +
-                            '<form-input schema="{{schemaName}}" subschema="true" elementNo="{{field.elementNo}}" index={{index}}></form-input>' +
-                            '<button btn ng-click="updateElement()">done</button>' +
+                            '<ng-form class="form-inline">' +
+                            '<button class="btn btn-mini btn-warning form-btn pull-right" ng-click="updateElement()">done</button>' +
+                            '<form-input schema="{{schemaName}}" subschema="true" elementNo="{{field.elementNo}}" index={{index}} formstyle="inline"></form-input>' +
+                            '</ng-form>' +
                             '</div>' +
                             '</div>' +
                             '<div class="children" ng-if="field.content">' +
