@@ -196,9 +196,9 @@ formsAngular
         } else {
 
 
-            fieldInList.name = fieldInList.label.replace(/ /g, "_");
+//            fieldInList.name = fieldInList.label.replace(/ /g, "_");
             $scope.field.label = fieldInList.label;
-            $scope.field.name = fieldInList.label.replace(/ /g, "_");
+            $scope.field.name = fieldInList.name;  //label.replace(/ /g, "_");
             $scope.field.type = fieldInList.dataType;
 
             $scope.toggleEditableElement = !$scope.toggleEditableElement;

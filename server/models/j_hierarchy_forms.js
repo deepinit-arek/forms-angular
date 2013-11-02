@@ -4,11 +4,12 @@ var mongoose = require('mongoose')
 var HierarchyElement = new Schema({
     elementNo: {type: Number, required: true, form:{label : 'Element No', hidden: true}},
     parent: { type: Number, form: {hidden: true} },
-    name: {type : String, required:true, form: {hidden: true}},  // merge field in doc.  unique within careplan structure
-    label: {type : String},  // merge field in doc. unique within careplan structure
     order: {type: Number, form: {hidden: true}},
     displayStatus: {type: Boolean, form: {hidden: true}},
+
+    label: {type : String},
     dataType: {type: String, enum:['text', 'textarea', 'container', 'array']}
+
 }, {_id: false});
 
 var HierarchyStructureSchema = new Schema({
