@@ -31,6 +31,6 @@ module.exports = {
     model: HierarchyStructure,
     schema: HierarchyStructureSchema, 
     elements: HierarchyElement
-}
+};
 
 

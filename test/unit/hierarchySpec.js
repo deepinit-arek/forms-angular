@@ -52,7 +52,7 @@ describe('fng-hierarchy', function() {
 				"parent": 7,
 				"name": "second1",
 				"order": 14,
-				"label": "ttt",
+				"label": "ttt"
 			}, {
 				"elementNo": 15,
 				"order": 3,
@@ -60,7 +60,7 @@ describe('fng-hierarchy', function() {
 				"dataType": "textarea",
 				"name": "just_this_thingdfdfdff"
 			}]
-		}
+		};
 
 		formSchema = [{
 			"name": "Name",
@@ -175,21 +175,13 @@ describe('fng-hierarchy', function() {
 
 		beforeEach(function() {
 			inject(function($rootScope, $controller, _$compile_, _$httpBackend_, $templateCache, _utils_) {
-
 				$httpBackend = _$httpBackend_;
-
 				scope = $rootScope;
-
 				$compile = _$compile_;
-
 				scope.record = recordData;
-
 				scope.path = recordData.Hierarchy;
-
 				scope.model = 'Hierarchy';
-
-				utils = _utils_
-
+				utils = _utils_;
 				ctrl = $controller("fngHierarchyListCtrl", {
 					$scope: scope
 				});
@@ -801,9 +793,6 @@ describe('fng-hierarchy', function() {
 			});
 
 		});
-
-
-
 	});
 
 	xdescribe('drag drop functions', function() {
@@ -815,30 +804,19 @@ describe('fng-hierarchy', function() {
 				// dump($attrs);
 
 				ngDragDropService = _ngDragDropService_;
-
-
 				$timeout = _$timeout_;
-
 				$httpBackend = _$httpBackend_;
 				scope = $rootScope;
 
 				scope.remove = function() {
 					scope.record.Hierarchy.pop();
-				}
-
-				// scope.onDrop = function() {
-				// 	return true;
-				// }
+				};
 
 				scope.record = recordData;
 
 				scope.formSchema = formSchema;
 
 				scope.__schema_Hierarchy = schemaHierarchy;
-
-				// scope.hier = hierarchy;
-
-
 
 				$httpBackend.whenGET('/template/hierarchy-master.html').respond($templateCache.get('app/template/hierarchy-master.html'));
 				var template = '<fng-hierarchy-list data-record="record.Hierarchy" data-schema="__schema_Hierarchy"></fng-hierarchy-list>';
