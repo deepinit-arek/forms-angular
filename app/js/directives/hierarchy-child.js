@@ -54,7 +54,6 @@ formsAngular
             i;
 
         function renumberHigherElements() {
-            dragged.order = dropTarget.order + 1;
             for (i = 0; i < dropTarget.parentReference.length; i++) {
                 if (dropTarget.parentReference[i].elementNo === dropTarget.elementNo) { //move
                     reOrderStartIndex = i + 1;
@@ -64,6 +63,7 @@ formsAngular
             for (i = reOrderStartIndex; i < dropTarget.parentReference.length; i++) {
                 dropTarget.parentReference[i].order = dropTarget.parentReference[i].order + 1;
             }
+            dragged.order = dropTarget.order + 1;
             utils.updateOrder($scope);
         }
 
