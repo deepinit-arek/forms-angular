@@ -171,15 +171,18 @@ formsAngular
             controller: 'fngHierarchyChildCtrl',
             compile: function() {
                 return {
-                    post: function(scope, element) {
+                    post: function(scope, element, attrs) {
                         var template =
-                            '<div class="hierarchy-list {{field.dataType}}" jqyoui-draggable="{animate:true}" data-drag="true" data-jqyoui-options="{revert: true}">' +
+                            '<div class="hierarchy-list clearfix {{field.dataType}}" jqyoui-draggable="{animate:true}" data-drag="true" data-jqyoui-options="{revert: true}">' +
                                 '<div ng-switch="toggleEditableElement">' +
                                     '<div ng-switch-when="true" ng-class= "{hoverindicator: hoverLine}" data-drop="true" jqyoui-droppable="{animate:true, onDrop: \'onDrop\', onOver: \'onOver\', onOut: \'onOut\'}"> ' +
                                         //TODO better to use ng-class, but it's quite inpenetrable for three value conditional
                                         // '<span class="name"><i class="{{field.type == \'container\' && ({toggleChildElement && (\'icon-folder-close\') || (\'icon-folder-open\')}) || (\'icon-file\')}}" ng-click="toggleChildren()"></i>{{field.label}}</span>' +
                                         // '<span class="name"><i ng-class="{\'icon-file\': field.type !==\'container\' && (\'icon-folder-close\': !toggleChildElement, \'icon-folder-open\': toggleChildElement)}" ng-click="toggleChildren()"></i>{{field.label}}</span>' +
-                                        '<span class="name"><i class="{{iconType}}" ng-click="toggleChildren()"></i>{{field.label}}</span>' +
+                                        '<span class="name">' +
+                                            '<i class="{{iconType}}" ng-click="toggleChildren()"></i>' +
+                                            '<span>{{ getHierarchyLabel(field) }}</span>' +
+                                        '</span>' +
                                         '<span class="hierarchy-controls">' +
                                             '<span ng-if="field.type == \'container\'">' +
                                                 '<i class="icon-plus-sign" ng-click="addChild($event, field.elementNo)"></i>' +
@@ -194,8 +197,8 @@ formsAngular
                                     '</div>' +
                                     '<div ng-switch-when="false">' +
                                         '<ng-form class="form-inline">' +
-                                            '<button class="btn btn-mini btn-warning form-btn pull-right" ng-click="updateElement()">done</button>' +
                                             '<form-input schema="{{schemaName}}" subschema="true" elementNo="{{field.elementNo}}" index={{index}} formstyle="inline"></form-input>' +
+                                            '<button class="btn btn-mini btn-warning form-btn pull-right" ng-click="updateElement()">Done</button>' +
                                         '</ng-form>' +
                                     '</div>' +
                                 '</div>' +

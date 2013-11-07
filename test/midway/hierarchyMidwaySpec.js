@@ -23,6 +23,7 @@ describe('fng-hierarchy', function () {
                     {
                         "elementNo": 1,
                         "name": "lowerf",
+                        "label": "lowerf",
                         "dataType": "text",
                         "parent": 0,
                         "order": 7
@@ -30,17 +31,20 @@ describe('fng-hierarchy', function () {
                     {
                         "elementNo": 2,
                         "name": "secon",
+                        "label": "secon",
                         "order": 5
                     },
                     {
                         "elementNo": 5,
                         "name": "sdsdf",
+                        "label": "sdsdf",
                         "dataType": "text",
                         "order": 8
                     },
                     {
                         "elementNo": 6,
                         "name": "but",
+                        "label": "but",
                         "dataType": "text",
                         "parent": 0,
                         "order": 6
@@ -155,11 +159,8 @@ describe('fng-hierarchy', function () {
         });
 
         describe('actions', function () {
-
             it('should remove a hierarchy element', function () {
-
                 var el = elm.find('i.icon-minus-sign');
-
 
                 expect(el.length).toBe(8);
                 $(el[2]).click();
@@ -234,10 +235,10 @@ describe('fng-hierarchy', function () {
                 var plusIcon = elm.find('.icon-plus-sign');
 
                 expect(elm.find('.icon-folder-close').length).toEqual(0);
-
                 $(plusIcon[plusIcon.length - 1]).click();
 
-                scope.record.Hierarchy[8].name = 'TestingLabel';
+                scope.record.Hierarchy[8].label = 'TestingLabel';
+                scope.record.Hierarchy[8].name = 'TestingName';
                 scope.record.Hierarchy[8].dataType = 'container';
 
                 elm.find('button').click();

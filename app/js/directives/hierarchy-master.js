@@ -3,7 +3,7 @@ formsAngular
 
 .controller('fngHierarchyListCtrl', function($scope, utils) {
 
-	$scope.hoverLine = false;
+    $scope.hoverLine = false;
 
 	$scope.onDrop = function(event, ui) {
 		var childElementNo = ui.draggable.scope().field.elementNo;
@@ -72,7 +72,19 @@ formsAngular
 
 	$scope.getNextElementNo = function(arrayField) {
         return _.max(arrayField,function(obj) {return obj.elementNo}).elementNo + 1;
-	}
+	};
+
+    $scope.getHierarchyLabel = function(field) {
+        var result = '';
+
+        if ($scope['_hierarchy_list_']) {
+            for (var i = 0 ; i < $scope['_hierarchy_list_'].length ; i ++) {
+                result += $scope.getListData(field, $scope['_hierarchy_list_'][i].name) + ' ';
+            }
+        }
+        return result;
+    };
+
 })
 
 .directive('fngHierarchyList', function(utils) {
@@ -84,6 +96,7 @@ formsAngular
 		replace: true,
 		controller: 'fngHierarchyListCtrl',
 		link: function(scope, element, attrs, fngHierarchyListCtrl) {
+
 			//add watch to ensure loading works correctly
 			var bootstrap = scope.$watch('record', function(neww) {
 				if (neww._id !== undefined) {
@@ -94,7 +107,7 @@ formsAngular
 
 					scope.model = path[1];
 
-					if (scope[path[0]] === undefined) {
+                    if (scope[path[0]] === undefined) {
 
 						scope[path[0]] = {};
 						scope.path = scope[path[0]][path[1]] = [];

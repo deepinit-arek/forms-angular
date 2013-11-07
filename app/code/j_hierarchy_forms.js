@@ -4,10 +4,12 @@ var mongoose = require('mongoose')
 var HierarchyElement = new Schema({
     elementNo: {type: Number, required: true, form:{label : 'Element No', hidden: true}},
     parent: { type: Number, form: {hidden: true} },
-    order: {type: Number, form: {hidden: true}},
     displayStatus: {type: Boolean, form: {hidden: true}},
 
-    label: {type : String},
+    label: {type : String, list:{}},
+    name: {type : String, required: true},
+    order: {type: Number, form: {hidden: true}},
+    something: Number,
     dataType: {type: String, enum:['text', 'textarea', 'container', 'array']}
 
 }, {_id: false});
