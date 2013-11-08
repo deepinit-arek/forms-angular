@@ -5,10 +5,20 @@ formsAngular
 
     $scope.hoverLine = false;
 
+    // TODO: (hierref) see if we need the first two parameters
+    $scope.getIndex = function(record, treeElement, reqElementNo) {
+        for (var i = 0; i < record[treeElement].length; i++) {
+            if (record[treeElement][i][$scope.hierarchyOptions.elementNoFld] === reqElementNo) {
+                return i;
+            }
+        }
+        return i;   // Steve - why?  An explanatory comment would be good here
+    };
+
 	$scope.onDrop = function(event, ui) {
-		var childElementNo = ui.draggable.scope().field.elementNo;
-		var index = utils.getIndex($scope.record, $scope.model, childElementNo);
-		$scope.record.Hierarchy[index].parent = undefined;
+		var childElementNo = ui.draggable.scope().field[$scope.hierarchyOptions.elementNoFld];
+		var index = $scope.getIndex($scope.record, $scope.treeElement, childElementNo);
+		$scope.record[$scope.treeElement][index][$scope.hierarchyOptions.parentFld] = undefined;
 		$scope.onOver(event, ui);
 		$scope.parsePath();
 		$scope.$apply();
@@ -19,8 +29,131 @@ formsAngular
 		$scope.$apply();
 	};
 
+    // TODO: (hierref) see if we need the first parameter
+    // TODO: (hierref) see if we can merge the called functions in
+    $scope.createFormSchema = function(assessmentLayout, readOnly) {
+        var fields = $scope.buildHierarchy(assessmentLayout, readOnly);
+        return $scope.sort(fields);
+    };
+
+    $scope.getNewItem = function(item, readOnly, parentContainer) {
+        // Steve - get new item for what?  What kind of item?
+
+        var newItem = {};
+        newItem = angular.copy(item);
+        //sort the name field:
+
+        if (!item.label) {
+            newItem.name = 'here is a blank name';
+        } else {
+            newItem.name = 'Here is a name'; //item.label;
+        }
+
+        newItem.id = 'f_' + item[$scope.hierarchyOptions.elementNoFld];
+
+        newItem.type = 'text' ; //!item.dataType ? 'text' : item.dataType;
+
+        if (newItem.type === 'textarea') {
+            newItem.rows = "auto";
+        }
+
+        newItem.readonly = readOnly;
+        newItem.parentReference = parentContainer;
+        return newItem;
+    };
+
+    $scope.buildHierarchy = function(arry, readOnly) {
+
+        var roots = [],
+            content = {},
+            len,
+            newItem,
+            i;
+
+        // find the top level nodes and hash the content based on parent
+        for (i = 0, len = arry.length; i < len; ++i) {
+
+            var item = arry[i],
+                p = item[$scope.hierarchyOptions.parentFld] === undefined ? undefined : item[$scope.hierarchyOptions.parentFld];
+
+            //transform the item
+
+            if (item.hide !== true) {
+
+                var target = p == undefined ? roots : (content[p] || (content[p] = []));
+                newItem = $scope.getNewItem(item, readOnly, target);
+                target.push(newItem);
+            }
+        }
+
+        // function to recursively build the tree
+        var findChildren = function(parent) {
+            if (content[parent[$scope.hierarchyOptions.elementNoFld]]) {
+                parent.content = content[parent[$scope.hierarchyOptions.elementNoFld]];
+                for (var i = 0, len = parent.content.length; i < len; ++i) {
+                    findChildren(parent.content[i]);
+                }
+            }
+        };
+
+        // enumerate through to handle the case where there are multiple roots
+        for (i = 0, len = roots.length; i < len; ++i) {
+            findChildren(roots[i]);
+        }
+
+        return roots;
+    };
+
+//custom sort function
+    $scope.sort = function(tree) {
+
+        var order = 0, orderFld = $scope.hierarchyOptions.orderFld;
+
+        function comparator(a, b) {
+            if (a[orderFld] === undefined) {
+                a[orderFld] = order;
+                order++;
+            }
+            if (b[orderFld] === undefined) {
+                b[orderFld] = order;
+                order++;
+            }
+            return (a[orderFld]- b[orderFld]);
+        }
+
+        function sortRecurse(el) {
+            order = 0;
+            el.sort(comparator);
+            for (var i = el.length - 1; i >= 0; i--) {
+                if (el[i].content) {
+                    sortRecurse(el[i].content);
+                }
+            }
+            return el;
+        }
+
+        return sortRecurse(tree);
+    };
+
+    // TODO: (hierref) most of the parameters passed in and out are probably not required
+    $scope.updateOrder = function(scope) {
+
+        function traverse(el) {
+            var index;
+            for (var i = el.length - 1; i >= 0; i--) {
+                index = $scope.getIndex(scope.record, scope.treeElement, el[i][$scope.hierarchyOptions.elementNoFld]);
+                scope.record[scope.treeElement][index][$scope.hierarchyOptions.orderFld] = el[i][$scope.hierarchyOptions.orderFld];
+                if (el[i].content) {
+                    traverse(el[i].content);
+                }
+            }
+        }
+
+        traverse(scope.hierarchy);
+    };
+
 	$scope.parsePath = function() {
-		$scope.hierarchy = utils.createFormSchema($scope.path);
+		$scope.hierarchy = $scope.createFormSchema($scope.path);
 	};
 
 	this.watchPath = function() {
@@ -33,20 +166,20 @@ formsAngular
 
 	$scope.addChild = function() {
 
-		if ($scope.model !== undefined) {
+		if ($scope.treeElement !== undefined) {
 			var arrayField = $scope.add(),
 				elementNo, order;
 
 			elementNo = $scope.getNextElementNo(arrayField);
 			elementNo = isNaN(elementNo) ? 0 : elementNo;
 
-			order = _.max($scope.hierarchy, function(el) {return el.order}).order + 1;
+			order = _.max($scope.hierarchy, function(el) {return el[$scope.hierarchyOptions.orderFld]})[$scope.hierarchyOptions.orderFld] + 1;
             order = isNaN(order) ? 0 : order;
 
-			arrayField.push({
-				elementNo: elementNo,
-				order: order
-			});
+            var childObj = {};
+            childObj[$scope.hierarchyOptions.orderFld] = order;
+            childObj[$scope.hierarchyOptions.elementNoFld] = elementNo;
+			arrayField.push(childObj);
 		} else {
 			$scope.$emit('showErrorMessage', {
 			    title: 'You can\'t do that',
@@ -57,7 +190,7 @@ formsAngular
 
 	$scope.add = function() {
 		var arrayField;
-		var fieldParts = $scope.model.split('.');
+		var fieldParts = $scope.treeElement.split('.');
 		arrayField = $scope.record;
 		var l = fieldParts.length;
         if (!arrayField[fieldParts[0]]) {
@@ -71,7 +204,7 @@ formsAngular
 	};
 
 	$scope.getNextElementNo = function(arrayField) {
-        return _.max(arrayField,function(obj) {return obj.elementNo}).elementNo + 1;
+        return _.max(arrayField,function(obj) {return obj[$scope.hierarchyOptions.elementNoFld]})[$scope.hierarchyOptions.elementNoFld] + 1;
 	};
 
     $scope.getHierarchyLabel = function(field) {
@@ -102,10 +235,10 @@ formsAngular
 				if (neww._id !== undefined) {
 
 					//quick and dirty. Assumes its always second level from record.
-					//e.g. record.Hierarchy TODO make generic.
+					//TODO: make generic.
 					var path = attrs.record.split('.');
 
-					scope.model = path[1];
+					scope.treeElement = path[1];
 
                     if (scope[path[0]] === undefined) {
 
@@ -120,7 +253,7 @@ formsAngular
 					}
 
 					scope.parsePath();
-					utils.updateOrder(scope);
+					scope.updateOrder(scope);
 					fngHierarchyListCtrl.watchPath();
 
 					//done my job, remove the watch;

@@ -1,38 +1,21 @@
 var mongoose = require('mongoose')
+    , fngHierarchy = require('../lib/fng-hierarchy-plugin')
     , Schema = mongoose.Schema;
 
-var HierarchyElement = new Schema({
-    elementNo: {type: Number, required: true, form:{label : 'Element No', hidden: true}},
-    parent: { type: Number, form: {hidden: true} },
-    displayStatus: {type: Boolean, form: {hidden: true}},
-
-    label: {type : String, list:{}},
-    name: {type : String, required: true},
-    order: {type: Number, form: {hidden: true}},
-    something: Number,
-    dataType: {type: String, enum:['text', 'textarea', 'container', 'array']}
-
+var PartsElement = new Schema({
+    description: {type : String, required: true, list:{}, form:{size:'medium'}},
+    sku: {type: String, form:{showIf:{lhs:'$parts.fngh_isContainer', comp:'eq', rhs:'false'}, size:'medium', label:'SKU'}},
+    qty: {type: Number, form:{showIf:{lhs:'$parts.fngh_isContainer', comp:'eq', rhs:'false'}}}
 }, {_id: false});
 
-var HierarchyStructureSchema = new Schema({
-    // elements : {type:[CareplanElement]}
-    Name: {type: String,required: true, index:true,list:{}},
-    Hierarchy: {type: [HierarchyElement], form: {hierarchy: true}}
+PartsElement.plugin(fngHierarchy, null);
+
+var JSchema = new Schema({
+    name: {type: String, required: true, index:true, list:{}},
+    parts: {type: [PartsElement], form: {hierarchy: true}}
 });
-         
-var HierarchyStructure;
 
-var modelName = 'HierarchyStructure';
-try {
-    HierarchyStructure = mongoose.model(modelName)
-} catch (e) {
-    HierarchyStructure = mongoose.model('HierarchyStructure', HierarchyStructureSchema)
-}
+var J;
+try {J = mongoose.model('J') } catch(e) {J = mongoose.model('J', JSchema)}
 
-module.exports = {
-    model: HierarchyStructure,
-    schema: HierarchyStructureSchema, 
-    elements: HierarchyElement
-};
-
-
+module.exports = J;
