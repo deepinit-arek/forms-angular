@@ -4,8 +4,8 @@ var mongoose = require('mongoose')
 
 var PartsElement = new Schema({
     description: {type : String, required: true, list:{}, form:{size:'medium'}},
-    sku: {type: String, form:{showIf:{lhs:'$parts.fngh_isContainer', comp:'eq', rhs:'false'}, size:'medium', label:'SKU'}},
-    qty: {type: Number, form:{showIf:{lhs:'$parts.fngh_isContainer', comp:'eq', rhs:'false'}}}
+    sku: {type: String, form:{showIf:{lhs:'$parts.fngh_isContainer', comp:'ne', rhs:true}, size:'medium', label:'SKU'}},
+    qty: {type: Number, form:{showIf:{lhs:'$parts.fngh_isContainer', comp:'ne', rhs:true}}}
 }, {_id: false});
 
 PartsElement.plugin(fngHierarchy, null);

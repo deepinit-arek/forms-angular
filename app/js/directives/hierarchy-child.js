@@ -2,16 +2,16 @@ formsAngular
 
 .controller('fngHierarchyChildCtrl', function($scope, utils) {
 
-    $scope.index = $scope.getIndex($scope.record, $scope.treeElement, $scope.node[$scope.hierarchyOptions.elementNoFld]);
+    $scope.index = $scope.getIndex($scope.record, $scope.hierarchyOptions.name, $scope.node[$scope.hierarchyOptions.elementNoFld]);
 
     $scope.hoverLine = false;
 
-    if ($scope.node.isContainer) {
-        $scope.toggleChildElement = $scope.record[$scope.treeElement][$scope.getIndex($scope.record, $scope.treeElement, $scope.node[$scope.hierarchyOptions.elementNoFld])]['displayStatus'];
+    if ($scope.node[$scope.hierarchyOptions.isContainerFld]) {
+        $scope.toggleChildElement = $scope.record[$scope.hierarchyOptions.name][$scope.getIndex($scope.record, $scope.hierarchyOptions.name, $scope.node[$scope.hierarchyOptions.elementNoFld])]['displayStatus'];
     }
 
     function toggleFolderIcon() {
-        if ($scope.node.isContainer) {
+        if ($scope.node[$scope.hierarchyOptions.isContainerFld]) {
             if ($scope.toggleChildElement === true) {
                 $scope.iconType = 'icon-folder-open';
             } else {
@@ -32,7 +32,7 @@ formsAngular
             $scope.toggleChildElement = !$scope.toggleChildElement;
         }
         //record the order for when initialising.
-        $scope.record[$scope.treeElement][$scope.getIndex($scope.record, $scope.treeElement, $scope.node[$scope.hierarchyOptions.elementNoFld])]['displayStatus'] = $scope.toggleChildElement;
+        $scope.record[$scope.hierarchyOptions.name][$scope.getIndex($scope.record, $scope.hierarchyOptions.name, $scope.node[$scope.hierarchyOptions.elementNoFld])]['displayStatus'] = $scope.toggleChildElement;
         toggleFolderIcon();
     };
 
@@ -47,9 +47,9 @@ formsAngular
             dropTarget = angular.element(event.target).scope().node,
             newParentElementNo = dropTarget[$scope.hierarchyOptions.elementNoFld],
             childElementNo = dragged[$scope.hierarchyOptions.elementNoFld],
-            childIndex = $scope.getIndex($scope.record, $scope.treeElement, childElementNo),
-            currentParent = $scope.record[$scope.treeElement][childIndex][$scope.hierarchyOptions.parentFld],
-            dropTargetParent = $scope.record[$scope.treeElement][$scope.getIndex($scope.record, $scope.treeElement, newParentElementNo)][$scope.hierarchyOptions.parentFld],
+            childIndex = $scope.getIndex($scope.record, $scope.hierarchyOptions.name, childElementNo),
+            currentParent = $scope.record[$scope.hierarchyOptions.name][childIndex][$scope.hierarchyOptions.parentFld],
+            dropTargetParent = $scope.record[$scope.hierarchyOptions.name][$scope.getIndex($scope.record, $scope.hierarchyOptions.name, newParentElementNo)][$scope.hierarchyOptions.parentFld],
             reOrderStartIndex,
             i;
 
@@ -68,9 +68,9 @@ formsAngular
         }
 
         //if dropping onto a container, and the target is open, then move the element.
-        if (dropTarget.isContainer && angular.element(event.target).scope().toggleChildElement === true) {
+        if (dropTarget[$scope.hierarchyOptions.isContainerFld] && angular.element(event.target).scope().toggleChildElement === true) {
             if (currentParent !== newParentElementNo) {
-                $scope.record[$scope.treeElement][childIndex][$scope.hierarchyOptions.parentFld] = newParentElementNo;
+                $scope.record[$scope.hierarchyOptions.name][childIndex][$scope.hierarchyOptions.parentFld] = newParentElementNo;
             } else {
                 renumberHigherElements()
             }
@@ -89,12 +89,12 @@ formsAngular
         $scope.toggleHoverLine();
     };
 
-    $scope.toggleEditableElement = false;
+    $scope.toggleEditableElement = true;
 
     //TODO Refactor
     $scope.updateElement = function() {
 
-        var fieldInList = $scope.record[$scope.treeElement][$scope.getIndex($scope.record, $scope.treeElement, $scope.node[$scope.hierarchyOptions.elementNoFld])];
+        var fieldInList = $scope.record[$scope.hierarchyOptions.name][$scope.getIndex($scope.record, $scope.hierarchyOptions.name, $scope.node[$scope.hierarchyOptions.elementNoFld])];
 
         //cancel if nothing has changed
 
@@ -106,7 +106,7 @@ formsAngular
         delete testForChange[$scope.hierarchyOptions.isContainerFld];
         if (Object.keys(testForChange).length === 0) {
 //        if (fieldInList.label === undefined && (fieldInList.dataType === undefined || fieldInList.dataType === "")) {
-            return $scope.removeLine($scope.treeElement, fieldInList[$scope.hierarchyOptions.elementNoFld]);
+            return $scope.removeLine($scope.hierarchyOptions.name, fieldInList[$scope.hierarchyOptions.elementNoFld]);
         }
 
         $scope.toggleEditableElement = !$scope.toggleEditableElement;
@@ -123,7 +123,7 @@ formsAngular
                 body: 'The element you are trying to delete has children. Please remove them first.'
             });
         } else {
-            var index = $scope.getIndex($scope.record, model, elementNo);
+            var index = $scope.getIndex($scope.record, $scope.hierarchyOptions.name, elementNo);
             if (index !== -1) {
                 $scope.remove(model, index);
             }
@@ -132,7 +132,6 @@ formsAngular
 
     $scope.addChild = function(ev, parent) {
         var arrayField = $scope.add();
-
         arrayField.push({
             elementNo: $scope.getNextElementNo(arrayField),
             parent: parent
@@ -158,12 +157,12 @@ formsAngular
                                             '<span>{{ getHierarchyLabel(node) }}</span>' +
                                         '</span>' +
                                         '<span class="hierarchy-controls">' +
-                                            '<span ng-if="node.isContainer">' +
+                                            '<span ng-if="node[' + scope.hierarchyOptions.isContainerFld + ']">' +
                                                 '<i class="icon-plus-sign" ng-click="addChild($event, node[' + scope.hierarchyOptions.elementNoFld + '])"></i>' +
                                             '</span>' +
                                             //call to removeLine
-                                            '<i class="icon-minus-sign" ng-click="removeLine(treeElement, node[' + scope.hierarchyOptions.elementNoFld + '])"></i>' +
-                                            '<span ng-if="!node.isContainer">' +
+                                            '<i class="icon-minus-sign" ng-click="removeLine(' + scope.hierarchyOptions.name + ', node[' + scope.hierarchyOptions.elementNoFld + '])"></i>' +
+                                            '<span ng-if="!node[' + scope.hierarchyOptions.isContainerFld + ']">' +
                                                 '<i class="icon"></i>' +
                                             '</span>' +
                                             '<i class="icon-edit" ng-click="editElement()"></i>' +

@@ -1,4 +1,8 @@
 //acts as the master element to control all sub elements.
+
+// Scope variables:
+// hierarchy:  An array with one element per root level node.  Container elements have 'content' - an array of children.  All elements have a parent, which is hierarchy itself at the top level
+
 formsAngular
 
 .controller('fngHierarchyListCtrl', function($scope, utils) {
@@ -17,8 +21,8 @@ formsAngular
 
 	$scope.onDrop = function(event, ui) {
 		var childElementNo = ui.draggable.scope().field[$scope.hierarchyOptions.elementNoFld];
-		var index = $scope.getIndex($scope.record, $scope.treeElement, childElementNo);
-		$scope.record[$scope.treeElement][index][$scope.hierarchyOptions.parentFld] = undefined;
+		var index = $scope.getIndex($scope.record, $scope.hierarchyOptions.name, childElementNo);
+		$scope.record[$scope.hierarchyOptions.name][index][$scope.hierarchyOptions.parentFld] = undefined;
 		$scope.onOver(event, ui);
 		$scope.parsePath();
 		$scope.$apply();
@@ -141,8 +145,8 @@ formsAngular
         function traverse(el) {
             var index;
             for (var i = el.length - 1; i >= 0; i--) {
-                index = $scope.getIndex(scope.record, scope.treeElement, el[i][$scope.hierarchyOptions.elementNoFld]);
-                scope.record[scope.treeElement][index][$scope.hierarchyOptions.orderFld] = el[i][$scope.hierarchyOptions.orderFld];
+                index = $scope.getIndex(scope.record, $scope.hierarchyOptions.name, el[i][$scope.hierarchyOptions.elementNoFld]);
+                scope.record[$scope.hierarchyOptions.name][index][scope.hierarchyOptions.orderFld] = el[i][$scope.hierarchyOptions.orderFld];
                 if (el[i].content) {
                     traverse(el[i].content);
                 }
@@ -166,7 +170,7 @@ formsAngular
 
 	$scope.addChild = function() {
 
-		if ($scope.treeElement !== undefined) {
+		if ($scope.hierarchyOptions.name) {
 			var arrayField = $scope.add(),
 				elementNo, order;
 
@@ -189,18 +193,19 @@ formsAngular
 	};
 
 	$scope.add = function() {
-		var arrayField;
-		var fieldParts = $scope.treeElement.split('.');
-		arrayField = $scope.record;
-		var l = fieldParts.length;
-        if (!arrayField[fieldParts[0]]) {
-            if (0 === l - 1) {
-                arrayField[fieldParts[0]] = [];
-            } else {
-                arrayField[fieldParts[0]] = {};
-            }
-        }
-        return arrayField[fieldParts[0]];
+//		var arrayField;
+//		var fieldParts = $scope[$scope.hierarchyOptions.name].split('.');
+//		arrayField = $scope.record;
+//		var l = fieldParts.length;
+//        if (!arrayField[fieldParts[0]]) {
+//            if (0 === l - 1) {
+//                arrayField[fieldParts[0]] = [];
+//            } else {
+//                arrayField[fieldParts[0]] = {};
+//            }
+//        }
+//        return arrayField[fieldParts[0]];
+        return $scope.record[$scope.hierarchyOptions.name] || [];
 	};
 
 	$scope.getNextElementNo = function(arrayField) {
@@ -238,7 +243,7 @@ formsAngular
 					//TODO: make generic.
 					var path = attrs.record.split('.');
 
-					scope.treeElement = path[1];
+//					scope.treeElement = path[1];
 
                     if (scope[path[0]] === undefined) {
 
