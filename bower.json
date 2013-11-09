@@ -37,7 +37,8 @@
     "angular-elastic": "~2.0.0",
     "angular-dragdrop": "~1.0.4",
     "select2-bootstrap-css": "~1",
-    "jspdf": "git://github.com/mchapman/jsPDF#table-footer"
+    "jspdf": "git://github.com/mchapman/jsPDF#table-footer",
+    "components-font-awesome": "3.2.1"
   },
   "resolutions": {
     "angular": "1.2.0-rc.3"
